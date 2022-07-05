@@ -59,38 +59,31 @@ class _MyHomePageState extends State<MyHomePage> {
             ),),
           SizedBox(height: 270),
           Center(
-            child: Positioned(
-                left: 200,
-                top: 100,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)
-                      ),
-                    ),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.fromLTRB(30, 10, 30, 10),
-
-                    ),
-
-                    backgroundColor: MaterialStateProperty.all(
-                        Color.fromARGB(255, 74, 170, 248)
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)
                     ),
                   ),
+                  padding: MaterialStateProperty.all(
+                    const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                  ),
+                  backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(255, 74, 170, 248)
+                  ),
+                ),
 
+                onPressed: () {},
+                child: Text('새로운 스터디 만들기',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
 
-                  onPressed: () {},
-                  child: Text('새로운 스터디 만들기',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
-                )
-
-    )
-            ,
-
+              )
           ),
-        ],
+          SizedBox(height: 20,),
+
+          ],
+
       ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(canvasColor: Colors.white),
@@ -135,7 +128,4 @@ class _MyHomePageState extends State<MyHomePage> {
     Text('찜'),
     Text('내정보'),
   ];
-}
-
-class Cotainer {
 }
