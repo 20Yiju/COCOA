@@ -32,16 +32,34 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            body_item.elementAt(current_index),
-            const SizedBox(height: 390),
-            ElevatedButton(
+      // appBar: AppBar(
+      //   title: Text(widget.title),
+      // ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            child: Flexible(child: FractionallySizedBox(
+              widthFactor: 1.0,
+              heightFactor: 1.0,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 74, 170, 248),
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(30),
+                        bottomLeft:
+                        Radius.circular(30)),
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/user.png'),
+                    scale: 7
+                  )// <--- border radius here
+                ),
+              ),
+            ),
+            ),),
+          const SizedBox(height: 390),
+          Center(
+            child: ElevatedButton(
               style: ButtonStyle(
                   shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
@@ -61,9 +79,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
 
             ),
-          ],
-        ),
-
+          ),
+        ],
       ),
       bottomNavigationBar: Theme(
         data: Theme.of(context).copyWith(canvasColor: Colors.white),
@@ -99,6 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+
+
   }
   List body_item = [
     Text('홈'),
@@ -106,4 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Text('찜'),
     Text('내정보'),
   ];
+}
+
+class Cotainer {
 }
