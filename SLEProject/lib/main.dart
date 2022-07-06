@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:study/func/app.dart';
 //import 'package:study/func/addStudy.dart';
 
-void main() {
+void main() async {
   runApp( MyApp());
 }
 
