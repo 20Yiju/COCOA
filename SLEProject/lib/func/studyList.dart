@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:study/func/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -125,16 +126,30 @@ class _ListViewPageState extends State<ListViewPage> {
         .width * 0.5;
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.home,
+            color: Colors.blue,
+          ),
+          onPressed: () {Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => Home()));},
+        ),
         actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              showSearch(context: context, delegate: Search(titleList));
-            },
-            icon: Icon(Icons.search),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0,0,40,0),
+            child: IconButton(
+              onPressed: () {
+                showSearch(context: context, delegate: Search(titleList));
+              },
+              icon: Icon(Icons.search, color: Colors.black),
+            )
           )
         ],
         centerTitle: true,
-        title: Text('스터디 검색'),
+        title: Text('스터디 검색',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
       ),
       body: ListView.builder(
         itemCount: titleList.length,
