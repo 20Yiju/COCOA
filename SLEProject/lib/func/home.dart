@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:study/func/studyList.dart';
+import 'package:study/func/profile.dart';
+
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -26,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int current_index =0;
-
+  final List<Widget> _children = [Home(), MyApp(),SettingsUI(), SettingsUI()];
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +94,10 @@ class _MyHomePageState extends State<MyHomePage> {
           type: BottomNavigationBarType.shifting,
           currentIndex: current_index,
           onTap: (index) {
-            setState(() {
-              current_index = index;
-            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => _children[index]),
+            );
           },
           items: [
             BottomNavigationBarItem(
