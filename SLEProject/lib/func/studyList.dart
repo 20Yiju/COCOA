@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(const MyApp());
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -19,6 +23,8 @@ class ListViewPage extends StatefulWidget {
 }
 
 class _ListViewPageState extends State<ListViewPage> {
+  List<String> saved = [];
+
   var titleList = [
     'Dentist',
     'Pharmacist',
@@ -33,16 +39,7 @@ class _ListViewPageState extends State<ListViewPage> {
   ];
 
   var imageList = [
-    'image/1.png',
-    'image/2.png',
-    'image/3.png',
-    'image/4.png',
-    'image/5.png',
-    'image/6.png',
-    'image/7.png',
-    'image/8.png',
-    'image/9.png',
-    'image/10.png'
+    'image/hgu.png'
   ];
 
   var description = [
@@ -59,6 +56,9 @@ class _ListViewPageState extends State<ListViewPage> {
   ];
 
   get trailing => null;
+
+
+
 
   void showPopup(context, title, image, description) {
     showDialog(
@@ -122,7 +122,7 @@ class _ListViewPageState extends State<ListViewPage> {
     double width = MediaQuery
         .of(context)
         .size
-        .width * 0.6;
+        .width * 0.5;
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
@@ -139,19 +139,20 @@ class _ListViewPageState extends State<ListViewPage> {
       body: ListView.builder(
         itemCount: titleList.length,
         itemBuilder: (context, index) {
+          final alreadySaved = saved.contains(titleList[index]);
           return InkWell(
             onTap: () {
               debugPrint(titleList[index]);
-              showPopup(context, titleList[index], imageList[index],
+              showPopup(context, titleList[index], imageList[0],
                   description[index]);
             },
             child: Card(
               child: Row(
                 children: [
                   SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: Image.asset(imageList[index]),
+                    width: 80,
+                    height: 80,
+                    child: Image.asset(imageList[0]),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
@@ -180,10 +181,31 @@ class _ListViewPageState extends State<ListViewPage> {
 
                     ),
                   ),
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
+                  Column(
+                      children: [
+                        IconButton(
+                          icon: Icon (
+                            alreadySaved ? Icons.favorite : Icons.favorite_border,
+                            color: alreadySaved ? Colors.red : null,
+                            semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',),
+                          onPressed: () {
+                            setState(() {
+                              if (alreadySaved) {
+                                saved.remove(titleList[index]);
+                              } else {
+                                saved.add(titleList[index]);
+                              }
+                            });},
+                        ),
+                        FlatButton(
+                          onPressed: () {
+
+                          },
+                          child: Text('신청'),
+
+                        ),
+                      ]
+                  )
                 ],
               ),
             ),
@@ -234,10 +256,17 @@ class Search extends SearchDelegate {
   final List<String> listExample;
   Search(this.listExample);
 
+  List<String> recentList = [""];
 
   @override
   Widget buildSuggestions(BuildContext context) {
     List<String> suggestionList = [];
+    query.isEmpty
+        ? suggestionList = recentList //In the true case
+        : suggestionList.addAll(listExample.where(
+      // In the false case
+          (element) => element.contains(query),
+    ));
 
     return ListView.builder(
       itemCount: suggestionList.length,
@@ -246,7 +275,6 @@ class Search extends SearchDelegate {
           title: Text(
             suggestionList[index],
           ),
-          leading: query.isEmpty ? Icon(Icons.access_time) : SizedBox(),
           onTap: (){
             selectedResult = suggestionList[index];
             showResults(context);
