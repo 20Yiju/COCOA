@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:study/func/profile.dart';
 
 //void main() => runApp(const MyApp());
 
@@ -135,11 +136,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   child: const Text('Edit',
                     style: TextStyle(fontSize: 20),),
 
-                  onPressed: () {
-                    print(nameController.text);
-                    print(passwordController.text);
-                  },
-                )
+                  // onPressed: () {
+                  //
+                  //   print(nameController.text);
+                  //   print(passwordController.text);
+                  // },
+                  onPressed: () {Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => SettingsUI()));},
+                ),
             ),
           ],
         ));
