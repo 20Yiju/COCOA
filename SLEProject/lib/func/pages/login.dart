@@ -31,10 +31,30 @@ class Login extends StatelessWidget {
       ),
       body: Column(
         children: [
-          TextButton(
-            child: Text("Google Login"),
-            onPressed: signInWithGoogle,
-          ),
+          SizedBox(height: 130,),
+          Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: const Text(
+                'STUDY APP by COCOA',
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 25),
+              )),
+          SizedBox(height: 150,),
+          Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              child: ElevatedButton(
+                child: Text("Google Login", style: TextStyle(fontSize: 20),),
+                onPressed: signInWithGoogle,
+                style: ButtonStyle(
+                  padding: MaterialStateProperty.all(
+                  const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                ),
+                ),
+              ),),
         ],
       ),
     );

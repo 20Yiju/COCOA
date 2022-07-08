@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 //import 'package:study/func/Signin.dart';
-import 'package:study/func/app.dart';
+import 'package:study/func/studyList.dart';
 //import 'package:study/func/addStudy.dart';
 
 void main() async {
   runApp( MyApp());
 }
 
-class MyApp extends StatelessWidget {
+/*class MyApp extends StatelessWidget {
 
   Widget build(BuildContext context){
     return MaterialApp(
@@ -18,4 +18,4 @@ class MyApp extends StatelessWidget {
       home: App(),
     );
   }
-}
+}*/
