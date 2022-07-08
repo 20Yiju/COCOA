@@ -74,16 +74,16 @@ class _StudyInfo extends State<StudyInfo> {
                 const SizedBox(height: 10),
                 Text('전산전자공학부 김예인', style: TextStyle(fontSize: 16, color: Colors.black)
                 ),
-
                 const SizedBox(height: 30),
-                TextFieldWidget(
-                  label: '카카오톡 오픈채팅방 링크',
-                  text: '링크',
+                Text('카카오톡 오픈채팅방 링크', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueAccent)
+                ),
+                const SizedBox(height: 10),
+                Text('firebase에서 가져올 거예요', style: TextStyle(fontSize: 16, color: Colors.black)
                 ),
                 const SizedBox(height: 24),
                 TextFieldWidget(
                   label: '스터디 설명',
-                  text: '스터디 설명을 엄청 길게 써볼 거다 왜냐면 스크롤이 가능한지 볼 거니까 얼마나 써봐야 할까 근데 onChanged() 속성 없앴는데 왜 자꾸 edit 가능하게 바뀌는 거야 왜이래 왜 왜오 ㅐ왜왜 왜 왜 왜 왱',
+                  text: '스터디 설명',
                   maxLines: 10,
                 ),
               ],
@@ -137,16 +137,28 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         widget.label,
         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueAccent),
       ),
-      const SizedBox(height: 8),
-      TextField(
-        // controller: controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20),
+      const SizedBox(height: 15),
+      Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: Color.fromARGB(100,74,74,74)),
+              borderRadius: BorderRadius.circular(20)
           ),
-        ),
-        maxLines: widget.maxLines,
+
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Flexible(child: RichText(
+                overflow: TextOverflow.ellipsis,
+                maxLines: 10,
+                strutStyle: StrutStyle(fontSize: 10),
+                text: TextSpan(
+                    text: '스터디 설명을 엄청 길게 써볼 거다 왜냐면 박스 크기 조절이 가능한지 볼 거니까 얼마나 써봐야 할까 근데 onChanged() 속성 없앴는데 왜 자꾸 edit 가능하게 바뀌는 거야 왜이래 왜 왜오 ㅐ왜왜 왜 왜 왜 왱',
+                    style: TextStyle(fontSize: 16, color: Colors.grey)
+              )))
+
+            ],
+          )
       ),
     ],
-  ); 
+  );
 }
