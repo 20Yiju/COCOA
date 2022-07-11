@@ -27,16 +27,16 @@ class _ListViewPageState extends State<ListViewPage> {
   List<String> saved = [];
 
   var titleList = [
-    'Dentist',
-    'Pharmacist',
-    'School teacher',
-    'IT manager',
-    'Account',
-    'Lawyer',
-    'Hairdresser',
-    'Physician',
-    'Web developer',
-    'Medical Secretary'
+    '데구 스터디',
+    '자바 스터디',
+    '알고리즘 스터디',
+    '토익 스터디',
+    'OS 스터디',
+    '몰라',
+    '백준 스터디',
+    '몰라',
+    '몰라!!!',
+    '몰라!!!!!'
   ];
 
   var imageList = [
@@ -44,16 +44,7 @@ class _ListViewPageState extends State<ListViewPage> {
   ];
 
   var description = [
-    '1.There are different types of careers you can pursue in your life. Which one will it be?',
-    '2.There are different types of careers you can pursue in your life. Which one will it be?',
-    '3.There are different types of careers you can pursue in your life. Which one will it be?',
-    '4.There are different types of careers you can pursue in your life. Which one will it be?',
-    '5.There are different types of careers you can pursue in your life. Which one will it be?',
-    '6.There are different types of careers you can pursue in your life. Which one will it be?',
-    '7.There are different types of careers you can pursue in your life. Which one will it be?',
-    '8.There are different types of careers you can pursue in your life. Which one will it be?',
-    '9.There are different types of careers you can pursue in your life. Which one will it be?',
-    '10.There are different types of careers you can pursue in your life. Which one will it be?'
+   '여기에 인원수 가져와야할 걸 ,,?'
   ];
 
   get trailing => null;
@@ -123,7 +114,7 @@ class _ListViewPageState extends State<ListViewPage> {
     double width = MediaQuery
         .of(context)
         .size
-        .width * 0.5;
+        .width * 0.55;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -159,7 +150,7 @@ class _ListViewPageState extends State<ListViewPage> {
             onTap: () {
               debugPrint(titleList[index]);
               showPopup(context, titleList[index], imageList[0],
-                  description[index]);
+                  description[0]);
             },
             child: Card(
               child: Row(
@@ -178,7 +169,7 @@ class _ListViewPageState extends State<ListViewPage> {
                           style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey),
+                              color: Colors.black),
                         ),
                         const SizedBox(
                           height: 10,
@@ -186,7 +177,7 @@ class _ListViewPageState extends State<ListViewPage> {
                         SizedBox(
                           width: width,
                           child: Text(
-                            description[index],
+                            description[0],
                             style: TextStyle(
                                 fontSize: 15, color: Colors.grey[500]),
                           ),
@@ -212,13 +203,25 @@ class _ListViewPageState extends State<ListViewPage> {
                               }
                             });},
                         ),
-                        FlatButton(
-                          onPressed: () {
-
-                          },
-                          child: Text('신청'),
+                    SizedBox(
+                      height: 20,
+                       width: 50,
+                       child: ElevatedButton(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder( //to set border radius to button
+                                borderRadius: BorderRadius.circular(30)
+                            ),
+                              primary:Color.fromARGB(200,234,254,224),
+                              onPrimary:Colors.green,
+                              ),
+                          child: const Text(
+                            '신청',
+                            style: TextStyle(fontSize: 9),
+                          ),
 
                         ),
+                    )
                       ]
                   )
                 ],

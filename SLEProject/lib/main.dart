@@ -6,7 +6,7 @@ import 'package:study/func/studyInfo.dart';
 import 'package:study/func/studyList.dart';
 
 void main() async {
-  runApp(Info());
+  runApp(MyApp());
 }
 
 /*class MyApp extends StatelessWidget {
