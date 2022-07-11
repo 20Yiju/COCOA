@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:study/func/studyList.dart';
 import 'package:study/func/profile.dart';
+import 'package:study/func/heartList.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -29,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int current_index =0;
-  final List<Widget> _children = [Home(), MyApp(),SettingsUI(), SettingsUI()];
+  final List<Widget> _children = [Home(), MyApp(),HeartList(), SettingsUI()];
 
   @override
   Widget build(BuildContext context) {
