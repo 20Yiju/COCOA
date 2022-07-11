@@ -40,7 +40,7 @@ class _ListViewPageState extends State<ListViewPage> {
   ];
 
   var imageList = [
-    'image/hgu.png'
+    'image/o.jpeg'
   ];
 
   var description = [

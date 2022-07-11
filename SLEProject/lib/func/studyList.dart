@@ -40,11 +40,15 @@ class _ListViewPageState extends State<ListViewPage> {
   ];
 
   var imageList = [
-    'image/hgu.png'
+    'image/o.jpeg'
   ];
 
   var description = [
    '여기에 인원수 가져와야할 걸 ,,?'
+  ];
+
+  var explain =[
+    '데구 스터디는 ~~~~~~~~이렇게 진행됩니다. 몰라아ㅏㅏㅏㅏㅏㅏ 아무거나 적자 아무거나ㅏㅏㅏ'
   ];
 
   get trailing => null;
@@ -52,57 +56,55 @@ class _ListViewPageState extends State<ListViewPage> {
 
 
 
-  void showPopup(context, title, image, description) {
+  void showPopup(context, title,explain) {
     showDialog(
       context: context,
       builder: (context) {
-        return Dialog(
-          child: Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width * 0.7,
-            height: 380,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.white),
-            child: Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    image,
-                    width: 200,
-                    height: 200,
-                  ),
+        return AlertDialog(
+          shape:RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+          ),
+          content: Container(
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.7,
+              height: 300,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.white),
+              child :SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      title,
+                      style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        explain[0],
+                        maxLines: 3,
+                        style: TextStyle(fontSize: 15, color: Colors.grey[500]),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('확인',
+                          style: TextStyle( color: Colors.blue),),
+                    ),
+                  ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  title,
-                  style: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Text(
-                    description,
-                    maxLines: 3,
-                    style: TextStyle(fontSize: 15, color: Colors.grey[500]),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.close),
-                  label: const Text('close'),
-                ),
-              ],
-            ),
+              )
+
           ),
         );
       },
@@ -149,8 +151,7 @@ class _ListViewPageState extends State<ListViewPage> {
           return InkWell(
             onTap: () {
               debugPrint(titleList[index]);
-              showPopup(context, titleList[index], imageList[0],
-                  description[0]);
+              showPopup(context, titleList[index],explain);
             },
             child: Card(
               child: Row(
