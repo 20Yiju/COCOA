@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:study/func/studyList.dart';
 import 'package:study/func/profile.dart';
 import 'package:study/func/heartList.dart';
+import 'package:study/func/addStudy.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -78,7 +79,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
 
-                onPressed: () {},
+
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddStudy()),
+                    );
+                  },
                 child: Text('새로운 스터디 만들기',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
 

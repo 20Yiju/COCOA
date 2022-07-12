@@ -137,7 +137,7 @@ class _ListViewPageState extends State<ListViewPage> {
           )
         ],
         centerTitle: true,
-        title: Text('스터디 검색',
+        title: Text('찜 리스트 검색',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:study/func/home.dart';
+import 'package:study/func/heartList.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,7 +45,7 @@ class _ListViewPageState extends State<ListViewPage> {
   ];
 
   var description = [
-   '여기에 인원수 가져와야할 걸 ,,?'
+    '여기에 인원수 가져와야할 걸 ,,?'
   ];
 
   var explain =[
@@ -99,7 +100,7 @@ class _ListViewPageState extends State<ListViewPage> {
                         Navigator.pop(context);
                       },
                       child: const Text('확인',
-                          style: TextStyle( color: Colors.blue),),
+                        style: TextStyle( color: Colors.blue),),
                     ),
                   ],
                 ),
@@ -129,15 +130,23 @@ class _ListViewPageState extends State<ListViewPage> {
         ),
         actions: <Widget>[
           Padding(
-            padding: EdgeInsets.fromLTRB(0,0,40,0),
-            child: IconButton(
+              padding: EdgeInsets.fromLTRB(0,0,0,0),
+              child: IconButton(
+                onPressed: () {
+                  showSearch(context: context, delegate: Search(titleList));
+                },
+                icon: Icon(Icons.search, color: Colors.black),
+              )
+          ),
+          IconButton(
+              icon: Icon(Icons.favorite, color: Colors.red),
               onPressed: () {
-                showSearch(context: context, delegate: Search(titleList));
-              },
-              icon: Icon(Icons.search, color: Colors.black),
-            )
+                {Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => HeartList()));}
+              }
           )
         ],
+
         centerTitle: true,
         title: Text('스터디 검색',
           style: TextStyle(color: Colors.black),
@@ -204,25 +213,25 @@ class _ListViewPageState extends State<ListViewPage> {
                               }
                             });},
                         ),
-                    SizedBox(
-                      height: 20,
-                       width: 50,
-                       child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder( //to set border radius to button
-                                borderRadius: BorderRadius.circular(30)
-                            ),
+                        SizedBox(
+                          height: 20,
+                          width: 50,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder( //to set border radius to button
+                                  borderRadius: BorderRadius.circular(30)
+                              ),
                               primary:Color.fromARGB(200,234,254,224),
                               onPrimary:Colors.green,
-                              ),
-                          child: const Text(
-                            '신청',
-                            style: TextStyle(fontSize: 9),
-                          ),
+                            ),
+                            child: const Text(
+                              '신청',
+                              style: TextStyle(fontSize: 9),
+                            ),
 
-                        ),
-                    )
+                          ),
+                        )
                       ]
                   )
                 ],
