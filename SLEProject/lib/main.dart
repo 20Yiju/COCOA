@@ -78,21 +78,40 @@ class _StartPageState extends State<StartPage> {
 }
 */
 
+// import 'package:flutter/material.dart';
+//
+//
+// import 'package:study/func/calendar/calendar.dart';
+//
+// void main() {
+//   runApp(MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: "ESTech Calendar",
+//       home: Calendar(),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
+import 'package:study/func/app.dart';
 
-
-import 'package:study/func/calendar/calendar.dart';
-
-void main() {
+void main() async {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+
+  Widget build(BuildContext context){
     return MaterialApp(
-      title: "ESTech Calendar",
-      home: Calendar(),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: App(),
     );
   }
 }

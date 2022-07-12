@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:study/func/studyInfo.dart';
 import 'package:study/func/studyList.dart';
 import 'package:study/func/profile.dart';
 import 'package:study/func/heartList.dart';
@@ -62,6 +63,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             ),),
+          TextButton(
+            child: Text('이동'),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => Info()));
+            },
+          ),
+
           SizedBox(height: 270),
           Center(
               child: ElevatedButton(

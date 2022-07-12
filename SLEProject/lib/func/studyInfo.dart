@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:study/func/editProfile.dart';
 import 'package:study/func/home.dart';
+import 'package:study/func/calendar/calendar.dart';
 
 class Info extends StatelessWidget {
   @override
@@ -34,18 +35,7 @@ class _StudyInfo extends State<StudyInfo> {
           onPressed: () {Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => Home()));},
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.menu,
-              color: Colors.blue,
-            ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => Edit()));
-            },
-          ),
-        ],
+
       ),
       body: Container(
         padding: EdgeInsets.only(left: 5, top: 25, right: 5),
@@ -80,11 +70,40 @@ class _StudyInfo extends State<StudyInfo> {
                 const SizedBox(height: 10),
                 Text('firebase에서 가져올 거예요', style: TextStyle(fontSize: 16, color: Colors.black)
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 30),
+                Text('멤버별 성취도', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueAccent)
+                ),
+                const SizedBox(height: 90),
                 TextFieldWidget(
                   label: '스터디 설명',
                   text: '스터디 설명',
                   maxLines: 10,
+                ),
+                const SizedBox(height: 15),
+                Center(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)
+                          ),
+                        ),
+                        padding: MaterialStateProperty.all(
+                          const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                        ),
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 74, 170, 248)
+                        ),
+                      ),
+
+                      onPressed: () {
+                        Navigator.push(
+                             context, MaterialPageRoute(builder: (_) => Calendar()));
+                      },
+                      child: Text('일정 페이지로 이동',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+
+                    )
                 ),
               ],
             ),
@@ -148,13 +167,13 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Flexible(child: RichText(
-                overflow: TextOverflow.ellipsis,
-                maxLines: 10,
-                strutStyle: StrutStyle(fontSize: 10),
-                text: TextSpan(
-                    text: '스터디 설명을 엄청 길게 써볼 거다 왜냐면 박스 크기 조절이 가능한지 볼 거니까 얼마나 써봐야 할까 근데 onChanged() 속성 없앴는데 왜 자꾸 edit 가능하게 바뀌는 거야 왜이래 왜 왜오 ㅐ왜왜 왜 왜 왜 왱',
-                    style: TextStyle(fontSize: 16, color: Colors.grey)
-              )))
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 10,
+                  strutStyle: StrutStyle(fontSize: 10),
+                  text: TextSpan(
+                      text: '박스 크기가 조절되는지 확인하기 위해서 아무 말이나 쓰고 있습니다 사실 조절 되는 걸 확인하긴 했지만 이전 텍스트가 너무 정신없어서 리뉴얼합니다 조절 잘된다 최고!',
+                      style: TextStyle(fontSize: 16, color: Colors.grey)
+                  )))
 
             ],
           )

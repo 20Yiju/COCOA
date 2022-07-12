@@ -10,6 +10,7 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
+  bool _ischecked = false;
   late Map<DateTime, List<Event>> selectedEvents;
   CalendarFormat format = CalendarFormat.month;
   DateTime selectedDay = DateTime.now();
@@ -35,14 +36,15 @@ class _CalendarState extends State<Calendar> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("스터디 일정",
             style: TextStyle(
-            fontSize: 20,
-            color: Colors.white,
-            fontWeight: FontWeight.bold
-        )),
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.bold
+            )),
         centerTitle: true,
         backgroundColor: Colors.blue,
         elevation: 1,
@@ -123,18 +125,23 @@ class _CalendarState extends State<Calendar> {
                 ),
               ),
               ..._getEventsfromDay(selectedDay).map(
-                    (Event event) => ListTile(
-                  title: Text(
-                    event.title,
-                  ),
+                    (Event event) =>  CheckboxListTile(
+                  title: Text(event.title,),
+                  activeColor: Colors.redAccent,
+                  checkColor: Colors.black,
+                  selected: _ischecked,
+                  value: _ischecked,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      _ischecked = value!;
+                    });
+                  },
                 ),
               ),
             ],
           ),
         ),
       ),
-
-
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showDialog(
           context: context,

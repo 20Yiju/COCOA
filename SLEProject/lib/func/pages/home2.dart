@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/pages/login.dart';
+import '../home.dart';
 
-class Home extends StatelessWidget {
-  const Home({Key ?key}) : super(key : key);
+class Home2 extends StatelessWidget {
+  const Home2({Key ?key}) : super(key : key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,13 @@ class Home extends StatelessWidget {
                           child: Text('로그아웃'),
                         onPressed: () {
                             FirebaseAuth.instance.signOut();
+                        },
+                      ),
+                      TextButton(
+                        child: Text('시작하기'),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) => Home()));
                         },
                       ),
                     ],

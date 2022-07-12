@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:study/func/home.dart';
 
 class AddStudy extends StatelessWidget {
   @override
@@ -9,12 +10,12 @@ class AddStudy extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: Add(),
     );
   }
 }
 
-class Home extends StatelessWidget {
+class Add extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,8 +82,11 @@ class Home extends StatelessWidget {
                             ),
                           ),
 
-                          onPressed: () {},
-                          child: Text('새로운 스터디 만들기',
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => Home()));
+                          },
+                          child: Text('등록',
                               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
 
                         )
