@@ -120,7 +120,7 @@ class _ListViewPageState extends State<ListViewPage> {
         leading: IconButton(
           icon: Icon(
             Icons.home,
-            color: Colors.blue,
+            color: Colors.blueGrey,
           ),
           onPressed: () {Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => Home()));},

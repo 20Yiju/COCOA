@@ -21,15 +21,17 @@ class Home2 extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("${snapshot.data?.displayName}님 반갑습니다:D"),
+                      Text("${snapshot.data?.displayName}님 반갑습니다:D", style: TextStyle(fontWeight: FontWeight.bold),),
+                      SizedBox(height: 20,),
                       TextButton(
-                          child: Text('로그아웃'),
+                          child: Text('로그아웃', style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
                         onPressed: () {
                             FirebaseAuth.instance.signOut();
                         },
                       ),
                       TextButton(
-                        child: Text('시작하기'),
+                        child: Text('시작하기', style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
+
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) => Home()));

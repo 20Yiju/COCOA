@@ -38,7 +38,7 @@ class Login extends StatelessWidget {
               child: const Text(
                 'STUDY APP by COCOA',
                 style: TextStyle(
-                    color: Colors.blue,
+                    color: Colors.blueGrey,
                     fontWeight: FontWeight.w500,
                     fontSize: 25),
               )),

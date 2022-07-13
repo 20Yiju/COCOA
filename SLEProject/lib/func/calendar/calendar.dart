@@ -46,7 +46,7 @@ class _CalendarState extends State<Calendar> {
                 fontWeight: FontWeight.bold
             )),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueGrey,
         elevation: 1,
         leading: IconButton(
           icon: Icon(
@@ -92,7 +92,7 @@ class _CalendarState extends State<Calendar> {
                 calendarStyle: CalendarStyle(
                   isTodayHighlighted: true,
                   selectedDecoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Colors.blueGrey,
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -116,7 +116,7 @@ class _CalendarState extends State<Calendar> {
                   titleCentered: true,
                   formatButtonShowsNext: false,
                   formatButtonDecoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: Colors.blueGrey,
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   formatButtonTextStyle: TextStyle(

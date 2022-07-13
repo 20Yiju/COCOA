@@ -14,7 +14,7 @@ class Home extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
               heightFactor: 1.0,
               child: Container(
                 decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 74, 170, 248),
+                    color: Colors.blueGrey,
                     borderRadius: BorderRadius.only(
                         bottomRight: Radius.circular(30),
                         bottomLeft:
@@ -84,7 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     const EdgeInsets.fromLTRB(30, 10, 30, 10),
                   ),
                   backgroundColor: MaterialStateProperty.all(
-                      Color.fromARGB(255, 74, 170, 248)
+                      //Color.fromARGB(255, 74, 170, 248)
+                    Colors.blueGrey
                   ),
                 ),
 
@@ -134,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: '내정보'
             ),
           ],
-          selectedItemColor: Colors.blue,
+          selectedItemColor: Colors.blueGrey,
           unselectedItemColor: Colors.grey,
           showUnselectedLabels: true,
         ),
