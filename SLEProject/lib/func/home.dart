@@ -14,7 +14,7 @@ class Home extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -50,7 +50,19 @@ class _MyHomePageState extends State<MyHomePage> {
               heightFactor: 1.0,
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.blueGrey,
+                    gradient: LinearGradient(
+                      colors: [
+                        //     Color(0xff3B4383),
+                        Color(0xff485ed9),
+                       // Color(0xff485ed9).
+                        //  Color(0xffA67E90),
+                        Color(0xffd4d9f5),
+
+                        //  Color(0xffd1a6d5),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
                     borderRadius: BorderRadius.only(
                         bottomRight: Radius.circular(30),
                         bottomLeft:
@@ -64,7 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ),),
           TextButton(
-            child: Text('이동'),
+            child: Text('이동',
+            style: TextStyle(color:Color(0xff485ed9))),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => Info()));
@@ -84,8 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     const EdgeInsets.fromLTRB(30, 10, 30, 10),
                   ),
                   backgroundColor: MaterialStateProperty.all(
-                      //Color.fromARGB(255, 74, 170, 248)
-                    Colors.blueGrey
+                      Color(0xff485ed9)
                   ),
                 ),
 
@@ -119,8 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: '홈'
+                icon: Icon(Icons.home,color:Color(0xff485ed9),),
+                label: '홈',
             ),
             BottomNavigationBarItem(
                 icon: Icon(Icons.search),
@@ -135,7 +147,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: '내정보'
             ),
           ],
-          selectedItemColor: Colors.blueGrey,
+          selectedItemColor: Color(0xff485ed9),
           unselectedItemColor: Colors.grey,
           showUnselectedLabels: true,
         ),

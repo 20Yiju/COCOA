@@ -98,6 +98,7 @@ class _StartPageState extends State<StartPage> {
 // }
 import 'package:flutter/material.dart';
 import 'package:study/func/app.dart';
+import 'func/home.dart';
 
 void main() async {
   runApp(MyApp());

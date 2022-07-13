@@ -28,21 +28,25 @@ class Login extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("SNS Login"),
-      ),
+        backgroundColor: Color(0xff485ed9),
+        ),
       body: Column(
         children: [
           SizedBox(height: 130,),
           Container(
+            width: 250,
+              height: 250,
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
-              child: const Text(
-                'STUDY APP by COCOA',
-                style: TextStyle(
-                    color: Colors.blueGrey,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 25),
-              )),
-          SizedBox(height: 150,),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/logo3.png'),
+                  fit: BoxFit.fill,
+
+                ),
+              ),
+          ),
+          SizedBox(height: 40,),
           Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.all(10),
@@ -50,6 +54,7 @@ class Login extends StatelessWidget {
                 child: Text("Google Login", style: TextStyle(fontSize: 20),),
                 onPressed: signInWithGoogle,
                 style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xff485ed9)),
                   padding: MaterialStateProperty.all(
                   const EdgeInsets.fromLTRB(20, 5, 20, 5),
                 ),

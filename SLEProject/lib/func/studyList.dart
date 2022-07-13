@@ -100,7 +100,7 @@ class _ListViewPageState extends State<ListViewPage> {
                         Navigator.pop(context);
                       },
                       child: const Text('확인',
-                        style: TextStyle( color: Colors.blueGrey),),
+                        style: TextStyle( color: Colors.blue),),
                     ),
                   ],
                 ),
@@ -123,7 +123,7 @@ class _ListViewPageState extends State<ListViewPage> {
         leading: IconButton(
           icon: Icon(
             Icons.home,
-            color: Colors.blueGrey,
+            color: Color(0xff485ed9),
           ),
           onPressed: () {Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => Home()));},
@@ -135,7 +135,7 @@ class _ListViewPageState extends State<ListViewPage> {
                 onPressed: () {
                   showSearch(context: context, delegate: Search(titleList));
                 },
-                icon: Icon(Icons.search, color: Colors.black),
+                icon: Icon(Icons.search, color: Color(0xff485ed9)),
               )
           ),
           IconButton(

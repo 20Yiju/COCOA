@@ -27,7 +27,7 @@ class Add extends StatelessWidget {
               },
               color: Colors.white,
               icon: Icon(Icons.arrow_back)),
-          backgroundColor: Colors.blueGrey,
+          backgroundColor: Color(0xff485ed9),
         ),
         body: Center(
           child: GestureDetector(
@@ -80,7 +80,7 @@ class Add extends StatelessWidget {
                             ),
                             backgroundColor: MaterialStateProperty.all(
                                 //Color.fromARGB(255, 74, 170, 248)
-                              Colors.blueGrey
+                                Color(0xff485ed9)
                             ),
                           ),
 

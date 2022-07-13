@@ -46,7 +46,7 @@ class _CalendarState extends State<Calendar> {
                 fontWeight: FontWeight.bold
             )),
         centerTitle: true,
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Color(0xff485ed9),
         elevation: 1,
         leading: IconButton(
           icon: Icon(
@@ -92,7 +92,7 @@ class _CalendarState extends State<Calendar> {
                 calendarStyle: CalendarStyle(
                   isTodayHighlighted: true,
                   selectedDecoration: BoxDecoration(
-                    color: Colors.blueGrey,
+                    color: Color(0xff485ed9),
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(5.0),
                   ),
@@ -116,7 +116,7 @@ class _CalendarState extends State<Calendar> {
                   titleCentered: true,
                   formatButtonShowsNext: false,
                   formatButtonDecoration: BoxDecoration(
-                    color: Colors.blueGrey,
+                    color: Color(0xff485ed9),
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   formatButtonTextStyle: TextStyle(
@@ -183,7 +183,9 @@ class _CalendarState extends State<Calendar> {
         ),
         label: Text("일정 등록하기"),
         icon: Icon(Icons.add),
+        backgroundColor:  Color(0xff485ed9),
       ),
+
     );
   }
 }

@@ -30,7 +30,7 @@ class _StudyInfo extends State<StudyInfo> {
         leading: IconButton(
           icon: Icon(
             Icons.home,
-            color: Colors.blueGrey,
+            color: Color(0xff485ed9),
           ),
           onPressed: () {Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => Home()));},
@@ -58,20 +58,20 @@ class _StudyInfo extends State<StudyInfo> {
                         )
                     )),
                 const SizedBox(height: 40),
-                Text('방장', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueGrey)
+                Text('방장', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
                 ),
 
                 const SizedBox(height: 10),
                 Text('전산전자공학부 김예인', style: TextStyle(fontSize: 16, color: Colors.black)
                 ),
                 const SizedBox(height: 30),
-                Text('카카오톡 오픈채팅방 링크', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueGrey)
+                Text('카카오톡 오픈채팅방 링크', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
                 ),
                 const SizedBox(height: 10),
                 Text('firebase에서 가져올 거예요', style: TextStyle(fontSize: 16, color: Colors.black)
                 ),
                 const SizedBox(height: 30),
-                Text('멤버별 성취도', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueGrey)
+                Text('멤버별 성취도', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
                 ),
                 const SizedBox(height: 90),
                 TextFieldWidget(
@@ -93,7 +93,7 @@ class _StudyInfo extends State<StudyInfo> {
                         ),
                         backgroundColor: MaterialStateProperty.all(
                             //Color.fromARGB(255, 74, 170, 248)
-                          Colors.blueGrey
+                            Color(0xff485ed9)
                         ),
                       ),
 
@@ -155,7 +155,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     children: [
       Text(
         widget.label,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueGrey),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9)),
       ),
       const SizedBox(height: 15),
       Container(

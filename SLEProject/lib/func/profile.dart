@@ -30,7 +30,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         leading: IconButton(
           icon: Icon(
             Icons.home,
-            color: Colors.blueGrey,
+            color: Color(0xff485ed9),
           ),
           onPressed: () {Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => Home()));},
@@ -39,7 +39,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           IconButton(
             icon: Icon(
               Icons.edit,
-              color: Colors.blueGrey,
+              color: Color(0xff485ed9),
             ),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(

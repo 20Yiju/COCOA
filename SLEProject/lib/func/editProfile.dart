@@ -13,7 +13,7 @@ class Edit extends StatelessWidget {
     return MaterialApp(
       title: _title,
       home: Scaffold(
-        appBar: AppBar(title: const Text(_title), backgroundColor: Colors.blueGrey,),
+        appBar: AppBar(title: const Text(_title), backgroundColor: Color(0xff485ed9)),
         body: const MyStatefulWidget(),
       ),
     );
@@ -45,7 +45,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     'Edit Profile',
                     style: TextStyle(
                         fontSize: 20,
-                        color: Colors.blueGrey,
+                        color: Color(0xff485ed9),
                         fontWeight: FontWeight.bold
                     )
                 )),
@@ -135,7 +135,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 child: ElevatedButton(
                   child: const Text('Edit',
                     style: TextStyle(fontSize: 20),),
-                  style: ElevatedButton.styleFrom(primary: Colors.blueGrey),
+                  style: ElevatedButton.styleFrom(primary: Color(0xff485ed9)),
                   onPressed: () {Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => SettingsUI()));},
                 ),
