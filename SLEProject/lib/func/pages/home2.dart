@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/pages/login.dart';
@@ -17,6 +18,11 @@ class Home2 extends StatelessWidget {
                 return Login();
               }
               else {
+                final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(snapshot.data?.displayName);
+                userCollectionReference.set({
+                  "userName": snapshot.data?.displayName,
+                  "age": 22,
+                });
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
