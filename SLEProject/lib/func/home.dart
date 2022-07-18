@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/studyInfo.dart';
 import 'package:study/func/studyList.dart';
@@ -33,6 +35,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int current_index =0;
   final List<Widget> _children = [Home(), MyApp(),HeartList(), SettingsUI()];
+  var user = FirebaseAuth.instance.authStateChanges();
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +80,17 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ),),
           TextButton(
-            child: Text('이동',
+            child: Text(auth.currentUser!.displayName.toString(), 
             style: TextStyle(color:Color(0xff485ed9))),
             onPressed: () {
+              // final userCollectionReference  = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+              // userCollectionReference.get().then((value) =>
+              //     print(value.data()!["age"])
+              // );
+              FirebaseFirestore.instance.collection('users').snapshots().
+                  listen((data) {
+                      print(data.docs[0]['userName']);
+              });
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => Info()));
             },
