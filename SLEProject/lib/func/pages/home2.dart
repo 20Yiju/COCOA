@@ -43,6 +43,7 @@ class Home2 extends StatelessWidget {
                               builder: (BuildContext context) => Home()));
                         },
                       ),
+                      Text('!초기 로그인 시, 프로필 설정 부탁드립니다!', style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
                     ],
                   ),
                 );

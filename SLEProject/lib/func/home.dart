@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       colors: [
                         //     Color(0xff3B4383),
                         Color(0xff485ed9),
-                       // Color(0xff485ed9).
+                        // Color(0xff485ed9).
                         //  Color(0xffA67E90),
                         Color(0xffd4d9f5),
 
@@ -71,17 +71,26 @@ class _MyHomePageState extends State<MyHomePage> {
                         bottomRight: Radius.circular(30),
                         bottomLeft:
                         Radius.circular(30)),
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/user.png'),
-                    scale: 7
-                  )// <--- border radius here
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/user.png'),
+                        scale: 7
+                    )//,-- border radius here
+                ),
+                child: Center(
+                  child: Container(
+                    padding: new EdgeInsets.all(40.0),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(auth.currentUser!.displayName.toString()),
+                    ),
+                  ),
                 ),
               ),
             ),
             ),),
           TextButton(
-            child: Text(auth.currentUser!.displayName.toString(),
-            style: TextStyle(color:Color(0xff485ed9))),
+            child: Text("이동",
+                style: TextStyle(color:Color(0xff485ed9))),
             onPressed: () {
               // final userCollectionReference  = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
               // userCollectionReference.get().then((value) =>
@@ -96,8 +105,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   .doc(auth.currentUser!.displayName.toString())
                   .get()
                   .then((DocumentSnapshot ds) {
-                    age = ds["age"];
-                    print(age);
+                age = ds["age"];
+                print(age);
               });
 
               Navigator.of(context).push(MaterialPageRoute(
@@ -123,12 +132,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
 
 
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AddStudy()),
-                    );
-                  },
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddStudy()),
+                  );
+                },
                 child: Text('새로운 스터디 만들기',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
 
@@ -136,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           SizedBox(height: 20,),
 
-          ],
+        ],
 
       ),
       bottomNavigationBar: Theme(
@@ -152,8 +161,8 @@ class _MyHomePageState extends State<MyHomePage> {
           },
           items: [
             BottomNavigationBarItem(
-                icon: Icon(Icons.home,color:Color(0xff485ed9),),
-                label: '홈',
+              icon: Icon(Icons.home,color:Color(0xff485ed9),),
+              label: '홈',
             ),
             BottomNavigationBarItem(
                 icon: Icon(Icons.search),

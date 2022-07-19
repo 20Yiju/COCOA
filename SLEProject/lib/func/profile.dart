@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:study/func/editProfile.dart';
 import 'package:study/func/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 
 class SettingsUI extends StatelessWidget {
@@ -20,6 +21,7 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  FirebaseAuth auth = FirebaseAuth.instance;
   bool showPassword = false;
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
               ),
               SizedBox(height: 35,),
-              buildTextField("이름", "firebase 에서 가져오기", false),
+              buildTextField("이름", auth.currentUser!.displayName.toString(), false),
               buildTextField("성별", "firebase 에서 가져오기", false),
               buildTextField("학부", "firebase 에서 가져오기", true),
               buildTextField("학년", "firebase 에서 가져오기", false),
@@ -102,7 +104,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
-        obscureText: isPasswordTextField ? showPassword : false,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.only(bottom: 3),
             labelText: labelText,
@@ -113,6 +114,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               fontWeight: FontWeight.bold,
               color: Colors.black,
             )),
+        enabled: false,
       ),
     );
   }

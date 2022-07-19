@@ -51,16 +51,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 )),
             SizedBox(height: 10,),
             Container(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: '이름',
-                ),
-              ),
-            ),
-            Container(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: Column(
                   children: [
