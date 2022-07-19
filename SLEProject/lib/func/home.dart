@@ -80,17 +80,26 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             ),),
           TextButton(
-            child: Text(auth.currentUser!.displayName.toString(), 
+            child: Text(auth.currentUser!.displayName.toString(),
             style: TextStyle(color:Color(0xff485ed9))),
             onPressed: () {
               // final userCollectionReference  = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
               // userCollectionReference.get().then((value) =>
               //     print(value.data()!["age"])
               // );
-              FirebaseFirestore.instance.collection('users').snapshots().
-                  listen((data) {
-                      print(data.docs[0]['userName']);
+              // FirebaseFirestore.instance.collection('users').snapshots().
+              //     listen((data) {
+              //         print(data.docs[0]['userName']);
+              // });
+              int age;
+              FirebaseFirestore.instance.collection("users")
+                  .doc(auth.currentUser!.displayName.toString())
+                  .get()
+                  .then((DocumentSnapshot ds) {
+                    age = ds["age"];
+                    print(age);
               });
+
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => Info()));
             },
