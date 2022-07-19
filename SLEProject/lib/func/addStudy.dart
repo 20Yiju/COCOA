@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/home.dart';
 
 
 class AddStudy extends StatelessWidget {
+  const AddStudy({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -11,12 +15,26 @@ class AddStudy extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: Add(),
+      home: const AddStatefulWidget(),
     );
   }
 }
 
-class Add extends StatelessWidget {
+class AddStatefulWidget extends StatefulWidget {
+  const AddStatefulWidget({Key? key}) : super (key: key);
+
+  @override
+  State<AddStatefulWidget> createState() => AddStateWidget();
+}
+
+class AddStateWidget extends State<AddStatefulWidget> {
+  late String name, number, description, url;
+  final inputController1 = TextEditingController();
+  final inputController2 = TextEditingController();
+  final inputController3 = TextEditingController();
+  final inputController4 = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,34 +56,74 @@ class Add extends StatelessWidget {
                   children: [
                     Padding(
                       padding: EdgeInsets.all(30.0),
-                      child: TextField(
+                      child: TextFormField(
                         decoration: InputDecoration(
                           labelText: '스터디 이름',
                         ),
+                        onChanged: (String? newValue) {
+                          name = newValue!;
+                          print(name);
+                        },
+                        validator: (value) {
+                          if(value!.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                        },
+                        controller: inputController1
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(30.0),
-                      child: TextField(
+                      child: TextFormField(
                         decoration: InputDecoration(
                           labelText: '인원',
                         ),
+                        onChanged: (String? newValue) {
+                          number = newValue!;
+                          print(number);
+                        },
+                        validator: (value) {
+                          if(value!.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                        },
+                        controller: inputController2,
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(30.0),
-                      child: TextField(
+                      child: TextFormField(
                         decoration: InputDecoration(
                           labelText: '스터디 설명',
                         ),
+                        onChanged: (String? newValue) {
+                          description = newValue!;
+                          print(description);
+                        },
+                        validator: (value) {
+                          if(value!.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                        },
+                          controller: inputController3,
                       ),
                     ),
                     Padding(
                       padding: EdgeInsets.all(30.0),
-                      child: TextField(
+                      child: TextFormField(
                         decoration: InputDecoration(
                           labelText: '오픈채팅방 주소',
                         ),
+                        onChanged: (String? newValue) {
+                          url = newValue!;
+                          print(url);
+                        },
+                        validator: (value) {
+                          if(value!.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                        },
+                          controller: inputController4,
                       ),
                     ),
                     Center(
@@ -86,6 +144,13 @@ class Add extends StatelessWidget {
                           ),
 
                           onPressed: () {
+                            final userCollectionReference = FirebaseFirestore.instance.collection("study").doc(inputController1.text);
+                            userCollectionReference.set({
+                              "studyName": inputController1.text,
+                              "number": inputController2.text,
+                              "description": inputController3.text,
+                              "url": inputController4.text,
+                            });
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) => Home()));
                           },
