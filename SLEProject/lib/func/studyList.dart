@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:study/func/home.dart';
 import 'package:study/func/heartList.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +28,8 @@ class ListViewPage extends StatefulWidget {
 
 class _ListViewPageState extends State<ListViewPage> {
   List<String> saved = [];
+
+
 
   var titleList = [
     '데구 스터디',
@@ -114,6 +118,15 @@ class _ListViewPageState extends State<ListViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth auth = FirebaseAuth.instance;
+
+    /*FirebaseFirestore.instance.collection("study")
+        .doc(auth.currentUser!.displayName.toString())
+        .get()
+        .then((DocumentSnapshot ds) {
+          titleList.addAll(ds);
+    });*/
+
     double width = MediaQuery
         .of(context)
         .size

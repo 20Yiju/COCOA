@@ -37,9 +37,17 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Widget> _children = [Home(), MyApp(),HeartList(), SettingsUI()];
   var user = FirebaseAuth.instance.authStateChanges();
   FirebaseAuth auth = FirebaseAuth.instance;
+  String department ="";
 
   @override
   Widget build(BuildContext context) {
+
+    FirebaseFirestore.instance.collection("users")
+        .doc(auth.currentUser!.displayName.toString())
+        .get()
+        .then((DocumentSnapshot ds) {
+      department = ds["department"];
+    });
 
     return Scaffold(
       // appBar: AppBar(
@@ -81,10 +89,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: new EdgeInsets.all(40.0),
                     child: Align(
                       alignment: Alignment.bottomCenter,
-                      child: Text(auth.currentUser!.displayName.toString()),
+                      child: Text(auth.currentUser!.displayName.toString(),style: TextStyle(fontSize: 18)),
                     ),
                   ),
                 ),
+
               ),
             ),
             ),),
