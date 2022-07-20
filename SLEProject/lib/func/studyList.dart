@@ -32,54 +32,14 @@ class _ListViewPageState extends State<ListViewPage> {
   var user = FirebaseAuth.instance.authStateChanges();
   FirebaseAuth auth = FirebaseAuth.instance;
   List<String> saved = [];
-  // int age;
-  // FirebaseFirestore.instance.collection("study")
-  //     .get()
-  //     .then((DocumentSnapshot ds) {
-  // age = ds["age"];
-  // print(age);
 
-  // Future getDocs() async {
-  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("study").get();
-  //   var titleList = new List.filled(querySnapshot.docs.length, null, growable: false);
-  //   for (int i = 0; i < querySnapshot.docs.length; i++) {
-  //     var a = querySnapshot.docs[i];
-  //     titleList[i] = a["studyName"];
-  //     print(titleList[i]);
-  //   }
-  // }
-
-  //
   List<String> titleList = [];
-  // Future<List<String>> getFireModels() async {
-  //   CollectionReference<Map<String,dynamic>> collectionReference =
-  //       FirebaseFirestore.instance.collection("study");
-  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("study").get();
-  //   for(var doc in querySnapshot.docs) {
-  //     titleList.add(doc["studyName"]);
-  //   }
-  //   return titleList;
-  //
-  // }
 
-  // CollectionReference _collectionRef =
-  // FirebaseFirestore.instance.collection('study');
   late var studies = [];
   late var number = [];
   late var description = [];
   late var url = [];
-
-
-  //
-  // Future<void> getData() async {
-  //   // Get docs from collection reference
-  //   QuerySnapshot querySnapshot = await _collectionRef.get();
-  //
-  //   // Get data from docs and convert map to List
-  //   studies = querySnapshot.docs.map((doc) => doc.data()).toList();
-  //
-  //   print(studies);
-  // }
+  late var heart = [];
 
 
   var imageList = [
@@ -161,6 +121,7 @@ class _ListViewPageState extends State<ListViewPage> {
           number.add(doc["number"]);
           description.add(doc["description"]);
           url.add(doc["url"]);
+          heart.add(doc["heart"]);
         }
 
       });
@@ -194,7 +155,8 @@ class _ListViewPageState extends State<ListViewPage> {
         body: ListView.builder(
           itemCount: studies.length,
           itemBuilder: (context, index) {
-            final alreadySaved = saved.contains(studies[index]);
+            // final alreadySaved = saved.contains(studies[index]);
+            final currentStudy = FirebaseFirestore.instance.collection("study").doc(studies[index]);
             return InkWell(
               onTap: () {
                 debugPrint(studies[index]);
@@ -239,15 +201,17 @@ class _ListViewPageState extends State<ListViewPage> {
                         children: [
                           IconButton(
                             icon: Icon (
-                              alreadySaved ? Icons.favorite : Icons.favorite_border,
-                              color: alreadySaved ? Colors.red : null,
-                              semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',),
+                              heart[index] ? Icons.favorite : Icons.favorite_border,
+                              color: heart[index] ? Colors.red : null,
+                              semanticLabel: heart[index] ? 'Remove from saved' : 'Save',),
                             onPressed: () {
                               setState(() {
-                                if (alreadySaved) {
-                                  saved.remove(studies[index]);
+                                if (heart[index]) {
+                                  heart[index] = false;
+                                  currentStudy.update({"heart" : false});
                                 } else {
-                                  saved.add(studies[index]);
+                                  heart[index] = true;
+                                  currentStudy.update({"heart" : true});
                                 }
                               });},
                           ),
@@ -255,7 +219,11 @@ class _ListViewPageState extends State<ListViewPage> {
                             height: 20,
                             width: 50,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                                userCollectionReference.update({
+                                  'study' : FieldValue.arrayUnion([studies[index]])});
+                              },
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder( //to set border radius to button
                                     borderRadius: BorderRadius.circular(30)
