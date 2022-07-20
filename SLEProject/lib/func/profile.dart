@@ -4,6 +4,9 @@ import 'package:study/func/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../main.dart';
+import 'heartList.dart';
+
 class SettingsUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -16,6 +19,7 @@ class SettingsUI extends StatelessWidget {
 }
 
 class EditProfilePage extends StatefulWidget {
+
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
@@ -25,6 +29,8 @@ String grade ="";
 
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  int current_index = 0;
+  final List<Widget> _children = [Home(), MyApp(),HeartList(), SettingsUI()];
   var user = FirebaseAuth.instance.authStateChanges();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -121,7 +127,40 @@ class _EditProfilePageState extends State<EditProfilePage> {
         ),
 
       ),
-
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(canvasColor: Colors.white),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.shifting,
+            currentIndex: current_index,
+            onTap: (index) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => _children[index]),
+              );
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: '홈',
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                  label: '검색'
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite),
+                  label: '찜'
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle),
+                  label: '내정보'
+              ),
+            ],
+            selectedItemColor: Color(0xff485ed9),
+            unselectedItemColor: Colors.grey,
+            showUnselectedLabels: true,
+          ),
+        )
     );
   }
 

@@ -255,7 +255,12 @@ class _ListViewPageState extends State<ListViewPage> {
                             height: 20,
                             width: 50,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                                userCollectionReference.update({
+                                  'study' : FieldValue.arrayUnion([studies[index]])});
+                                },
+
                               style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder( //to set border radius to button
                                     borderRadius: BorderRadius.circular(30)
