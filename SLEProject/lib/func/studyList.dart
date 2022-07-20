@@ -1,8 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/home.dart';
 import 'package:study/func/heartList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:study/func/profile.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,33 +29,61 @@ class ListViewPage extends StatefulWidget {
 }
 
 class _ListViewPageState extends State<ListViewPage> {
+  var user = FirebaseAuth.instance.authStateChanges();
+  FirebaseAuth auth = FirebaseAuth.instance;
   List<String> saved = [];
+  // int age;
+  // FirebaseFirestore.instance.collection("study")
+  //     .get()
+  //     .then((DocumentSnapshot ds) {
+  // age = ds["age"];
+  // print(age);
+
+  // Future getDocs() async {
+  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("study").get();
+  //   var titleList = new List.filled(querySnapshot.docs.length, null, growable: false);
+  //   for (int i = 0; i < querySnapshot.docs.length; i++) {
+  //     var a = querySnapshot.docs[i];
+  //     titleList[i] = a["studyName"];
+  //     print(titleList[i]);
+  //   }
+  // }
+
+  //
+  List<String> titleList = [];
+  // Future<List<String>> getFireModels() async {
+  //   CollectionReference<Map<String,dynamic>> collectionReference =
+  //       FirebaseFirestore.instance.collection("study");
+  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("study").get();
+  //   for(var doc in querySnapshot.docs) {
+  //     titleList.add(doc["studyName"]);
+  //   }
+  //   return titleList;
+  //
+  // }
+
+  // CollectionReference _collectionRef =
+  // FirebaseFirestore.instance.collection('study');
+  late var studies = [];
+  late var number = [];
+  late var description = [];
+  late var url = [];
 
 
+  //
+  // Future<void> getData() async {
+  //   // Get docs from collection reference
+  //   QuerySnapshot querySnapshot = await _collectionRef.get();
+  //
+  //   // Get data from docs and convert map to List
+  //   studies = querySnapshot.docs.map((doc) => doc.data()).toList();
+  //
+  //   print(studies);
+  // }
 
-  var titleList = [
-    '데구 스터디',
-    '자바 스터디',
-    '알고리즘 스터디',
-    '토익 스터디',
-    'OS 스터디',
-    '몰라',
-    '백준 스터디',
-    '몰라',
-    '몰라!!!',
-    '몰라!!!!!'
-  ];
 
   var imageList = [
     'image/o.jpeg'
-  ];
-
-  var description = [
-    '여기에 인원수 가져와야할 걸 ,,?'
-  ];
-
-  var explain =[
-    '데구 스터디는 ~~~~~~~~이렇게 진행됩니다. 몰라아ㅏㅏㅏㅏㅏㅏ 아무거나 적자 아무거나ㅏㅏㅏ'
   ];
 
   get trailing => null;
@@ -93,7 +123,7 @@ class _ListViewPageState extends State<ListViewPage> {
                     Padding(
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        explain[0],
+                        explain.toString(), // description[index].toString()
                         maxLines: 3,
                         style: TextStyle(fontSize: 15, color: Colors.grey[500]),
                         textAlign: TextAlign.center,
@@ -116,146 +146,176 @@ class _ListViewPageState extends State<ListViewPage> {
     );
   }
 
+  int current_index =0;
+  final List<Widget> _children = [Home(), MyApp(),HeartList(), SettingsUI()];
+
   @override
   Widget build(BuildContext context) {
-    FirebaseAuth auth = FirebaseAuth.instance;
-
-    /*FirebaseFirestore.instance.collection("study")
-        .doc(auth.currentUser!.displayName.toString())
+    FirebaseFirestore.instance
+        .collection('study')
         .get()
-        .then((DocumentSnapshot ds) {
-          titleList.addAll(ds);
-    });*/
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        if(!studies.contains(doc["studyName"]))  {
+          studies.add(doc["studyName"]);
+          number.add(doc["number"]);
+          description.add(doc["description"]);
+          url.add(doc["url"]);
+        }
+
+      });
+    });
+
 
     double width = MediaQuery
         .of(context)
         .size
         .width * 0.55;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.home,
-            color: Color(0xff485ed9),
-          ),
-          onPressed: () {Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => Home()));},
-        ),
-        actions: <Widget>[
-          Padding(
-              padding: EdgeInsets.fromLTRB(0,0,0,0),
-              child: IconButton(
-                onPressed: () {
-                  showSearch(context: context, delegate: Search(titleList));
-                },
-                icon: Icon(Icons.search, color: Color(0xff485ed9)),
-              )
-          ),
-          IconButton(
-              icon: Icon(Icons.favorite, color: Colors.red),
-              onPressed: () {
-                {Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => HeartList()));}
-              }
-          )
-        ],
-
-        centerTitle: true,
-        title: Text('스터디 검색',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Colors.white,
-      ),
-      body: ListView.builder(
-        itemCount: titleList.length,
-        itemBuilder: (context, index) {
-          final alreadySaved = saved.contains(titleList[index]);
-          return InkWell(
-            onTap: () {
-              debugPrint(titleList[index]);
-              showPopup(context, titleList[index],explain);
-            },
-            child: Card(
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Image.asset(imageList[0]),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Text(
-                          titleList[index],
-                          style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          width: width,
-                          child: Text(
-                            description[0],
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.grey[500]),
-                          ),
-                        ),
-
-                      ], //children
-
-                    ),
-                  ),
-                  Column(
-                      children: [
-                        IconButton(
-                          icon: Icon (
-                            alreadySaved ? Icons.favorite : Icons.favorite_border,
-                            color: alreadySaved ? Colors.red : null,
-                            semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',),
-                          onPressed: () {
-                            setState(() {
-                              if (alreadySaved) {
-                                saved.remove(titleList[index]);
-                              } else {
-                                saved.add(titleList[index]);
-                              }
-                            });},
-                        ),
-                        SizedBox(
-                          height: 20,
-                          width: 50,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder( //to set border radius to button
-                                  borderRadius: BorderRadius.circular(30)
-                              ),
-                              primary:Color.fromARGB(200,234,254,224),
-                              onPrimary:Colors.green,
-                            ),
-                            child: const Text(
-                              '신청',
-                              style: TextStyle(fontSize: 9),
-                            ),
-
-                          ),
-                        )
-                      ]
-                  )
-                ],
-              ),
+        appBar: AppBar(
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.fromLTRB(0,0,0,0),
+                child: IconButton(
+                  onPressed: () {
+                    showSearch(context: context, delegate: Search(titleList));
+                  },
+                  icon: Icon(Icons.search, color: Color(0xff485ed9)),
+                )
             ),
+          ],
+
+          centerTitle: true,
+          title: Text('스터디 검색',
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.white,
+        ),
+        body: ListView.builder(
+          itemCount: studies.length,
+          itemBuilder: (context, index) {
+            final alreadySaved = saved.contains(studies[index]);
+            return InkWell(
+              onTap: () {
+                debugPrint(studies[index]);
+                showPopup(context, studies[index], description[index].toString());
+              },
+              child: Card(
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Image.asset(imageList[0]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Text(
+                            studies[index],
+                            style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: width,
+                            child: Text(
+                              number[index],
+                              style: TextStyle(
+                                  fontSize: 15, color: Colors.grey[500]),
+                            ),
+                          ),
+
+                        ], //children
+
+                      ),
+                    ),
+                    Column(
+                        children: [
+                          IconButton(
+                            icon: Icon (
+                              alreadySaved ? Icons.favorite : Icons.favorite_border,
+                              color: alreadySaved ? Colors.red : null,
+                              semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',),
+                            onPressed: () {
+                              setState(() {
+                                if (alreadySaved) {
+                                  saved.remove(studies[index]);
+                                } else {
+                                  saved.add(studies[index]);
+                                }
+                              });},
+                          ),
+                          SizedBox(
+                            height: 20,
+                            width: 50,
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder( //to set border radius to button
+                                    borderRadius: BorderRadius.circular(30)
+                                ),
+                                primary:Color.fromARGB(200,234,254,224),
+                                onPrimary:Colors.green,
+                              ),
+                              child: const Text(
+                                '신청',
+                                style: TextStyle(fontSize: 9),
+                              ),
+
+                            ),
+                          )
+                        ]
+                    )
+                  ],
+                ),
+              ),
 
 
-          );
-        },
+            );
+          },
 
-      ),
+        ),
+
+        bottomNavigationBar: Theme(
+          data: Theme.of(context).copyWith(canvasColor: Colors.white),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.shifting,
+            currentIndex: current_index,
+            onTap: (index) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => _children[index]),
+              );
+            },
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: '홈',
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                  label: '검색'
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite),
+                  label: '찜'
+              ),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle),
+                  label: '내정보'
+              ),
+            ],
+            selectedItemColor: Color(0xff485ed9),
+            unselectedItemColor: Colors.grey,
+            showUnselectedLabels: true,
+          ),
+        )
     );
   }
 
