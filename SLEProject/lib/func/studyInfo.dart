@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/editProfile.dart';
 import 'package:study/func/home.dart';
@@ -18,11 +19,33 @@ class StudyInfo extends StatefulWidget {
   @override
   _StudyInfo createState() => _StudyInfo();
 }
+String url = "";
+String description = "";
 
 class _StudyInfo extends State<StudyInfo> {
+  late final study;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
+    final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    if (arguments != null) {
+      study = arguments["study"] as String;
+      print("study: " + study);
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    print("study22: " + study);
+    FirebaseFirestore.instance.collection("study")
+        .doc(study)
+        .get()
+        .then((DocumentSnapshot ds) {
+      url = ds["url"];
+      description = ds["description"];
+      print(url);
+      print(description);
+    });
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -49,8 +72,8 @@ class _StudyInfo extends State<StudyInfo> {
                 Container(
                     alignment: Alignment.center,
                     padding: const EdgeInsets.only(left: 2),
-                    child: const Text(
-                        '스터디명 Firebase에서 가져올 거에요',
+                    child: Text(
+                        study,
                         style: TextStyle(
                             fontSize: 20,
                             color: Colors.black,
@@ -65,10 +88,10 @@ class _StudyInfo extends State<StudyInfo> {
                 Text('전산전자공학부 김예인', style: TextStyle(fontSize: 16, color: Colors.black)
                 ),
                 const SizedBox(height: 30),
-                Text('카카오톡 오픈채팅방 링크', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
+                Text("카카오톡 오픈채팅방 링크", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
                 ),
                 const SizedBox(height: 10),
-                Text('firebase에서 가져올 거예요', style: TextStyle(fontSize: 16, color: Colors.black)
+                Text(url, style: TextStyle(fontSize: 16, color: Colors.black)
                 ),
                 const SizedBox(height: 30),
                 Text('멤버별 성취도', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
@@ -76,7 +99,7 @@ class _StudyInfo extends State<StudyInfo> {
                 const SizedBox(height: 90),
                 TextFieldWidget(
                   label: '스터디 설명',
-                  text: '스터디 설명',
+                  text: description,
                   maxLines: 10,
                 ),
                 const SizedBox(height: 15),
@@ -172,7 +195,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
                   maxLines: 10,
                   strutStyle: StrutStyle(fontSize: 10),
                   text: TextSpan(
-                      text: '박스 크기가 조절되는지 확인하기 위해서 아무 말이나 쓰고 있습니다 사실 조절 되는 걸 확인하긴 했지만 이전 텍스트가 너무 정신없어서 리뉴얼합니다 조절 잘된다 최고!',
+                      text: description,
                       style: TextStyle(fontSize: 16, color: Colors.grey)
                   )))
 

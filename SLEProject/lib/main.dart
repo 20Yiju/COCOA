@@ -97,10 +97,13 @@ class _StartPageState extends State<StartPage> {
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:study/func/app.dart';
 import 'func/home.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 

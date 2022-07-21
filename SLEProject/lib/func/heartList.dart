@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:study/func/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/profile.dart';
+import 'package:study/func/studyList.dart';
 
 import '../main.dart';
 
@@ -148,7 +149,7 @@ class _ListViewPageState extends State<ListViewPage> {
   }
 
   int current_index =0;
-  final List<Widget> _children = [Home(), MyApp(),HeartList(), SettingsUI()];
+  final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
   @override
   Widget build(BuildContext context) {

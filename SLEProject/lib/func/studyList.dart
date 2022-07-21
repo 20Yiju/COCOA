@@ -7,11 +7,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/profile.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const StudyList());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class StudyList extends StatelessWidget {
+  const StudyList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +107,7 @@ class _ListViewPageState extends State<ListViewPage> {
   }
 
   int current_index =0;
-  final List<Widget> _children = [Home(), MyApp(),HeartList(), SettingsUI()];
+  final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
   @override
   Widget build(BuildContext context) {
