@@ -29,27 +29,80 @@ class ListViewPage extends StatefulWidget {
 }
 
 class _ListViewPageState extends State<ListViewPage> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildBody(context),
+    );
+  }
+}
+
+Widget _buildBody(BuildContext context) {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  return StreamBuilder<QuerySnapshot>(
+    stream: FirebaseFirestore.instance.collection('study').snapshots(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) return LinearProgressIndicator();
+
+      return _buildList(context, snapshot.data!.docs);
+    },
+  );
+}
+
+Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
   var user = FirebaseAuth.instance.authStateChanges();
   FirebaseAuth auth = FirebaseAuth.instance;
   List<String> saved = [];
 
   List<String> titleList = [];
 
-  late var studies = [];
-  late var number = [];
-  late var description = [];
-  late var url = [];
-  late var heart = [];
+
+  late List<dynamic> studies = <dynamic>[];
+  late List<dynamic> number = <dynamic>[];
+  late List<dynamic> description = <dynamic>[];
+  late List<dynamic> url = <dynamic>[];
+  late List<dynamic> userHeart = <dynamic>[];
+  late List<dynamic> studyHeart = <dynamic>[];
+
+
+  final userReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+  userReference.get().then((value) => {
+    print("value: ${value["heart"]}"),
+    userHeart = value["heart"],
+    print("userHeart: ${userHeart}"),
+  });
+
+  // snapshot.data!["study"].forEach((element) {
+  //   studies.add(element);
+  // });
+
+  snapshot.forEach((element) {
+    studies.add(element["studyName"]);
+    number.add(element["number"]);
+    description.add(element["description"]);
+    url.add(element["url"]);
+    if(userHeart.contains(element["studyName"])) studyHeart.add(true);
+    else studyHeart.add(false);
+  });
+  print("heart: $userHeart");
+  print("studylist: $studies");
+
+
+
+  // print(studies[0]);
+
+//   return ListView(
+//     padding: const EdgeInsets.only(top: 20.0),
+//     children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+//   );
+// }
+
 
 
   var imageList = [
     'image/o.jpeg'
   ];
-
-  get trailing => null;
-
-
-
 
   void showPopup(context, title,explain) {
     showDialog(
@@ -109,24 +162,8 @@ class _ListViewPageState extends State<ListViewPage> {
   int current_index =0;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
-  @override
-  Widget build(BuildContext context) {
-    FirebaseFirestore.instance
-        .collection('study')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        if(!studies.contains(doc["studyName"]))  {
-          studies.add(doc["studyName"]);
-          number.add(doc["number"]);
-          description.add(doc["description"]);
-          url.add(doc["url"]);
-          heart.add(doc["heart"]);
-        }
 
-      });
-    });
-
+   print("length: ${studies.length}");
 
     double width = MediaQuery
         .of(context)
@@ -139,7 +176,7 @@ class _ListViewPageState extends State<ListViewPage> {
                 padding: EdgeInsets.fromLTRB(0,0,0,0),
                 child: IconButton(
                   onPressed: () {
-                    showSearch(context: context, delegate: Search(titleList));
+                    showSearch(context: context, delegate: Search(studies));
                   },
                   icon: Icon(Icons.search, color: Color(0xff485ed9)),
                 )
@@ -201,19 +238,20 @@ class _ListViewPageState extends State<ListViewPage> {
                         children: [
                           IconButton(
                             icon: Icon (
-                              heart[index] ? Icons.favorite : Icons.favorite_border,
-                              color: heart[index] ? Colors.red : null,
-                              semanticLabel: heart[index] ? 'Remove from saved' : 'Save',),
+                              studyHeart[index] ? Icons.favorite : Icons.favorite_border,
+                              color: studyHeart[index] ? Colors.red : null,
+                              semanticLabel: studyHeart[index] ? 'Remove from saved' : 'Save',),
                             onPressed: () {
-                              setState(() {
-                                if (heart[index]) {
-                                  heart[index] = false;
-                                  currentStudy.update({"heart" : false});
-                                } else {
-                                  heart[index] = true;
-                                  currentStudy.update({"heart" : true});
-                                }
-                              });},
+                              // setState(() {
+                              //   if (heart[index]) {
+                              //     heart[index] = false;
+                              //     currentStudy.update({"heart" : false});
+                              //   } else {
+                              //     heart[index] = true;
+                              //     currentStudy.update({"heart" : true});
+                              //   }
+                              // });
+                              },
                           ),
                           SizedBox(
                             height: 20,
@@ -287,7 +325,7 @@ class _ListViewPageState extends State<ListViewPage> {
     );
   }
 
-}
+
 class Search extends SearchDelegate {
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -322,14 +360,14 @@ class Search extends SearchDelegate {
     );
   }
 
-  final List<String> listExample;
+  final List<dynamic> listExample;
   Search(this.listExample);
 
-  List<String> recentList = [""];
+  List<dynamic> recentList = [""];
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<String> suggestionList = [];
+    List<dynamic> suggestionList = [];
     query.isEmpty
         ? suggestionList = recentList //In the true case
         : suggestionList.addAll(listExample.where(

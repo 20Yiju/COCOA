@@ -2,6 +2,7 @@ import 'package:study/func/calendar/event.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:study/func/studyInfo.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/home.dart';
 
 class Calendar extends StatefulWidget {
@@ -11,6 +12,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   bool _ischecked = false;
+  String? date; String? event;
   late Map<DateTime, List<Event>> selectedEvents;
   CalendarFormat format = CalendarFormat.month;
   DateTime selectedDay = DateTime.now();
@@ -49,12 +51,13 @@ class _CalendarState extends State<Calendar> {
         backgroundColor: Color(0xff485ed9),
         elevation: 1,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => Info()));},
+            icon: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            }
         ),
       ),
       body: Center(
@@ -81,6 +84,8 @@ class _CalendarState extends State<Calendar> {
                     focusedDay = focusDay;
                   });
                   print(focusedDay);
+                  date = focusedDay.toString();
+
                 },
                 selectedDayPredicate: (DateTime date) {
                   return isSameDay(selectedDay, date);
@@ -158,10 +163,12 @@ class _CalendarState extends State<Calendar> {
               TextButton(
                 child: Text("Ok"),
                 onPressed: () {
+
                   if (_eventController.text.isEmpty) {
 
                   } else {
                     if (selectedEvents[selectedDay] != null) {
+
                       selectedEvents[selectedDay]?.add(
                         Event(title: _eventController.text),
                       );
@@ -170,8 +177,18 @@ class _CalendarState extends State<Calendar> {
                         Event(title: _eventController.text)
                       ];
                     }
-
+                    event = _eventController.text;
+                    print("마지막 확인 $event 그리고 $date");
+                    // final calendarReference = FirebaseFirestore.instance.collection("study").doc("os 스터디").collection("calendar").doc(date);
+                    // calendarReference.update({
+                    //   ""
+                    // });
                   }
+                  // title : 일정 이름, selectDay
+                  //print("title $title, day: $selectedDay");
+                  //print("title title, day: $selectedDay");
+
+
                   Navigator.pop(context);
                   _eventController.clear();
                   setState((){});

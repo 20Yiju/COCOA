@@ -2,18 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/editProfile.dart';
 import 'package:study/func/home.dart';
-import 'package:study/func/calendar/calendar.dart';
+import 'package:study/func/calendar.dart';
+import 'package:get/get.dart';
 
 class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Study Info",
-      home: StudyInfo(),
+        initialRoute: 'StudyInfo',
+        routes: {
+          "StudyInfo": (context) =>  StudyInfo(),
+          'calendar': (context) =>  Calendar(),
+        }
+     // home: StudyInfo(),
     );
   }
 }
+
+// class Routes {
+//   Routes._();
+//   static const String Calendar = "/Calendar";
+//   static final routes = <String, WidgetBuilder> {
+//     Calendar : (BuildContext context) => Calendar()
+//   };
+// }
 
 class StudyInfo extends StatefulWidget {
   @override
@@ -121,8 +135,19 @@ class _StudyInfo extends State<StudyInfo> {
                       ),
 
                       onPressed: () {
+                        // Get.to(() => Calendar(), arguments: study
+                        // Navigator.of(context).pushNamed(Routes.Calendar, arguments: {"study": study});
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //       builder: (context) => Calendar(study: study),
+                        //     ));
+                        // Navigator.pushNamed(
+                        //   context, 'calender', arguments: study,
+                        // );
                         Navigator.push(
-                             context, MaterialPageRoute(builder: (_) => Calendar()));
+                            context, MaterialPageRoute(builder: (_) => Calendar()));
+                       // );
                       },
                       child: Text('일정 페이지로 이동',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),

@@ -112,7 +112,11 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
   int current_index =0;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
   late List<dynamic> studies = <dynamic>[];
+  late List<dynamic> heart = <dynamic>[];
 
+  snapshot.data!["heart"].forEach((element) {
+    heart.add(element);
+  });
   snapshot.data!["study"].forEach((element) {
     studies.add(element);
   });
