@@ -18,11 +18,11 @@ class Home2 extends StatelessWidget {
                 return Login();
               }
               else {
-                final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(snapshot.data?.displayName);
-                userCollectionReference.set({
-                  "userName": snapshot.data?.displayName,
-                  "age": 22,
-                });
+                // final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(snapshot.data?.displayName);
+                // userCollectionReference.set({
+                //   "userName": snapshot.data?.displayName,
+                //   "sex": "", "department": "", "grade": ""
+                // });
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -43,7 +43,7 @@ class Home2 extends StatelessWidget {
                               builder: (BuildContext context) => Home()));
                         },
                       ),
-                      Text('!초기 로그인 시, 프로필 설정 부탁드립니다!', style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
+                      Text('초기 로그인 시, 프로필 설정 부탁드립니다!', style: TextStyle(color: Colors.indigo, fontWeight: FontWeight.bold),),
                     ],
                   ),
                 );

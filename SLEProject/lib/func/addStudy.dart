@@ -150,6 +150,7 @@ class AddStateWidget extends State<AddStatefulWidget> {
                               "number": inputController2.text,
                               "description": inputController3.text,
                               "url": inputController4.text,
+                              "heart": false,
                             });
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) => Home()));

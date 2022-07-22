@@ -136,7 +136,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 onPressed: () {Navigator.of(context).push(MaterialPageRoute(
                     builder: (BuildContext context) => SettingsUI()));
                 final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
-                userCollectionReference.set({
+                userCollectionReference.update({
                   'sex': sex,
                   'grade': grade,
                   'department': department

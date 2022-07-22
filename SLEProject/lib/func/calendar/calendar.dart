@@ -172,6 +172,8 @@ class _CalendarState extends State<Calendar> {
                     }
 
                   }
+
+
                   Navigator.pop(context);
                   _eventController.clear();
                   setState((){});
