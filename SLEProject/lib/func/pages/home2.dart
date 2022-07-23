@@ -18,11 +18,6 @@ class Home2 extends StatelessWidget {
                 return Login();
               }
               else {
-                // final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(snapshot.data?.displayName);
-                // userCollectionReference.set({
-                //   "userName": snapshot.data?.displayName,
-                //   "sex": "", "department": "", "grade": ""
-                // });
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
