@@ -21,39 +21,45 @@ class SettingsUI extends StatelessWidget {
 }
 
 class EditProfilePage extends StatefulWidget {
-
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
+String userName = "";
 String sex = "";
 String department ="";
 String grade ="";
 
 
 class _EditProfilePageState extends State<EditProfilePage> {
-  int current_index = 0;
-  final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
-  var user = FirebaseAuth.instance.authStateChanges();
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  FirebaseAuth auth = FirebaseAuth.instance;
-
-
-
-  bool showPassword = false;
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildBody(context),
+    );
+  }
+}
 
+Widget _buildBody(BuildContext context) {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  return StreamBuilder<DocumentSnapshot>(
+    stream: FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.displayName.toString()).snapshots(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) return LinearProgressIndicator();
 
+      return _buildList(context, snapshot);
+    },
+  );
+}
 
-    FirebaseFirestore.instance.collection("users")
-        .doc(auth.currentUser!.displayName.toString())
-        .get()
-        .then((DocumentSnapshot ds) {
-      sex = ds["sex"];
-      department = ds["department"];
-      grade = ds["grade"];
-    });
+Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
 
+  int current_index = 0;
+  final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
+
+  userName = snapshot.data!["userName"];
+  sex = snapshot.data!["sex"];
+  department = snapshot.data!["department"];
+  grade= snapshot.data!["grade"];
 
     return Scaffold(
 
@@ -95,34 +101,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ),
                 SizedBox(height: 35,),
 
-                buildTextField("이름", auth.currentUser!.displayName.toString(), false),
+                buildTextField("이름", userName, false),
                 buildTextField("성별", sex, false),
                 buildTextField("학부", department, true),
                 buildTextField("학년", grade, false),
                 SizedBox(height: 0,),
-                Center(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)
-                          ),
-                        ),
-                        padding: MaterialStateProperty.all(
-                          const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                        ),
-                        backgroundColor: MaterialStateProperty.all(
-                            Color(0xff485ed9)
-                        ),
-                      ),
-
-                      onPressed: () {Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => SettingsUI()));},
-                      child: Text('Refresh',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
-                    )
-                ),
               ],
 
             ),
@@ -164,28 +147,31 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         )
     );
-  }
-
-  Widget buildTextField(
-      String labelText, String placeholder, bool isPasswordTextField) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 35.0),
-      child: TextField(
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.only(bottom: 3),
-            labelText: labelText,
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            hintText: placeholder,
-            hintStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            )),
-        enabled: false,
-      ),
-    );
-  }
 }
+
+
+Widget buildTextField(
+    String labelText, String placeholder, bool isPasswordTextField) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 35.0),
+    child: TextField(
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.only(bottom: 3),
+          labelText: labelText,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          hintText: placeholder,
+          hintStyle: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          )),
+      enabled: false,
+    ),
+  );
+}
+
+
+
 
 
 /*FirebaseFirestore.instance.collection("users")

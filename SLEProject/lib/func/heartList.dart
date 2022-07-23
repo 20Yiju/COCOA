@@ -1,14 +1,19 @@
-import 'package:flutter/material.dart';
-import 'package:study/func/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/home.dart';
+import 'package:study/func/heartList.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/profile.dart';
-import 'package:study/func/studyList.dart';
-
-import '../main.dart';
-
+late List<dynamic> studies = <dynamic>[];
+late List<dynamic> number = <dynamic>[];
+late List<dynamic> description = <dynamic>[];
+late List<dynamic> url = <dynamic>[];
+late List<dynamic> userHeart = <dynamic>[];
+late List<dynamic> studyHeart = <dynamic>[];
+var imageList = [
+  'image/o.jpeg'
+];
 
 void main() {
   runApp(const HeartList());
@@ -33,65 +38,55 @@ class ListViewPage extends StatefulWidget {
 }
 
 class _ListViewPageState extends State<ListViewPage> {
-  List<String> saved = [];
-  // int age;
-  // FirebaseFirestore.instance.collection("study")
-  //     .get()
-  //     .then((DocumentSnapshot ds) {
-  // age = ds["age"];
-  // print(age);
 
-  // Future getDocs() async {
-  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("study").get();
-  //   var titleList = new List.filled(querySnapshot.docs.length, null, growable: false);
-  //   for (int i = 0; i < querySnapshot.docs.length; i++) {
-  //     var a = querySnapshot.docs[i];
-  //     titleList[i] = a["studyName"];
-  //     print(titleList[i]);
-  //   }
-  // }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildBody(context),
+    );
+  }
+}
 
-  //
-  List<String> titleList = [];
-  // Future<List<String>> getFireModels() async {
-  //   CollectionReference<Map<String,dynamic>> collectionReference =
-  //       FirebaseFirestore.instance.collection("study");
-  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("study").get();
-  //   for(var doc in querySnapshot.docs) {
-  //     titleList.add(doc["studyName"]);
-  //   }
-  //   return titleList;
-  //
-  // }
+Widget _buildBody(BuildContext context) {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  return StreamBuilder<QuerySnapshot>(
+    stream: FirebaseFirestore.instance.collection('study').snapshots(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) return LinearProgressIndicator();
 
-  // CollectionReference _collectionRef =
-  // FirebaseFirestore.instance.collection('study');
-  late var studies = [];
-  late var number = [];
-  late var description = [];
-  late var url = [];
-  late var heart = [];
-
-  //
-  // Future<void> getData() async {
-  //   // Get docs from collection reference
-  //   QuerySnapshot querySnapshot = await _collectionRef.get();
-  //
-  //   // Get data from docs and convert map to List
-  //   studies = querySnapshot.docs.map((doc) => doc.data()).toList();
-  //
-  //   print(studies);
-  // }
+      return _buildList(context, snapshot.data!.docs);
+    },
+  );
+}
 
 
-  var imageList = [
-    'image/o.jpeg'
-  ];
+Widget _buildBody2(BuildContext context, String study, bool noIcon) {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  return StreamBuilder<DocumentSnapshot>(
+    stream: FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.displayName.toString()).snapshots(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) return LinearProgressIndicator();
 
-  get trailing => null;
+      return _buildList2(context, snapshot, study, noIcon);
+    },
+  );
+}
 
+Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
+  var user = FirebaseAuth.instance.authStateChanges();
+  FirebaseAuth auth = FirebaseAuth.instance;
 
+  snapshot.forEach((element) {
+    if(!studies.contains(element["studyName"])) {
+      studies.add(element["studyName"]);
+      number.add(element["number"]);
+      description.add(element["description"]);
+      url.add(element["url"]);
+      _buildBody2(context, element["studyName"], true);
+    }
+  });
 
+  print("studylist: $studies");
 
   void showPopup(context, title,explain) {
     showDialog(
@@ -149,185 +144,151 @@ class _ListViewPageState extends State<ListViewPage> {
   }
 
   int current_index =0;
-  final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
-
-  @override
-  Widget build(BuildContext context) {
-    FirebaseFirestore.instance
-        .collection('study')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        if(doc["heart"] == true) {
-          if(!studies.contains(doc["studyName"]))  {
-            studies.add(doc["studyName"]);
-            number.add(doc["number"]);
-            description.add(doc["description"]);
-            url.add(doc["url"]);
-            heart.add(doc["heart"]);
-          }
-        }
-      });
-    });
+  final List<Widget> _children = [Home(), HeartList(),HeartList(), SettingsUI()];
 
 
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width * 0.55;
-    return Scaffold(
-        appBar: AppBar(
-          actions: <Widget>[
-            Padding(
-                padding: EdgeInsets.fromLTRB(0,0,0,0),
-                child: IconButton(
-                  onPressed: () {
-                    showSearch(context: context, delegate: Search(titleList));
-                  },
-                  icon: Icon(Icons.search, color: Color(0xff485ed9)),
-                )
-            ),
-          ],
-
-          centerTitle: true,
-          title: Text('찜 리스트 검색',
-            style: TextStyle(color: Colors.black),
+  print("length: ${studies.length}");
+  double width = MediaQuery
+      .of(context)
+      .size
+      .width * 0.55;
+  return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.fromLTRB(0,0,0,0),
+              child: IconButton(
+                onPressed: () {
+                  showSearch(context: context, delegate: Search(studies));
+                },
+                icon: Icon(Icons.search, color: Color(0xff485ed9)),
+              )
           ),
-          backgroundColor: Colors.white,
+        ],
+
+        centerTitle: true,
+        title: Text('찜 스터디 목록',
+          style: TextStyle(color: Colors.black),
         ),
-        body: ListView.builder(
-          itemCount: studies.length,
-          itemBuilder: (context, index) {
-            //final alreadySaved = saved.contains(studies[index]);
-            final currentStudy = FirebaseFirestore.instance.collection("study").doc(studies[index]);
-            return InkWell(
-              onTap: () {
-                debugPrint(studies[index]);
-                showPopup(context, studies[index], description[index].toString());
-              },
-              child: Card(
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image.asset(imageList[0]),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          Text(
-                            studies[index],
-                            style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
+        backgroundColor: Colors.white,
+      ),
+      body: ListView.builder(
+        itemCount: studies.length,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              debugPrint(studies[index]);
+              showPopup(context, studies[index], description[index].toString());
+            },
+            child: Card(
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Image.asset(imageList[0]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text(
+                          studies[index],
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: width,
+                          child: Text(
+                            number[index],
+                            style: TextStyle(
+                                fontSize: 15, color: Colors.grey[500]),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            width: width,
-                            child: Text(
-                              number[index],
-                              style: TextStyle(
-                                  fontSize: 15, color: Colors.grey[500]),
-                            ),
-                          ),
+                        ),
 
-                        ], //children
+                      ], //children
 
-                      ),
                     ),
-                    Column(
-                        children: [
-                          IconButton(
-                            icon: Icon (
-                              heart[index] ? Icons.favorite : Icons.favorite_border,
-                              color: heart[index] ? Colors.red : null,
-                              semanticLabel: heart[index] ? 'Remove from saved' : 'Save',),
+                  ),
+                  Column(
+                      children: [
+                        _buildBody2(context, studies[index], false),
+                        SizedBox(
+                          height: 20,
+                          width: 50,
+                          child: ElevatedButton(
                             onPressed: () {
-                              setState(() {
-                                if (heart[index]) {
-                                  heart[index] = false;
-                                  currentStudy.update({"heart" : false});
-                                } else {
-                                  heart[index] = true;
-                                  currentStudy.update({"heart" : true});
-                                }
-                              });},
-                          ),
-                          SizedBox(
-                            height: 20,
-                            width: 50,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder( //to set border radius to button
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
-                                primary:Color.fromARGB(200,234,254,224),
-                                onPrimary:Colors.green,
+                              final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                              userCollectionReference.update({
+                                'study' : FieldValue.arrayUnion([studies[index]])});
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder( //to set border radius to button
+                                  borderRadius: BorderRadius.circular(30)
                               ),
-                              child: const Text(
-                                '신청',
-                                style: TextStyle(fontSize: 9),
-                              ),
-
+                              primary: Color.fromARGB(200,234,254,224),
+                              onPrimary:Colors.green,
                             ),
-                          )
-                        ]
-                    )
-                  ],
-                ),
+                            child: const Text(
+                              '신청',
+                              style: TextStyle(fontSize: 9),
+                            ),
+                          ),
+                        )
+                      ]
+                  )
+                ],
               ),
+            ),
+          );
+        },
+      ),
 
-
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(canvasColor: Colors.white),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.shifting,
+          currentIndex: current_index,
+          onTap: (index) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => _children[index]),
             );
           },
-
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: '홈',
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                label: '검색'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: '찜'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle),
+                label: '내정보'
+            ),
+          ],
+          selectedItemColor: Color(0xff485ed9),
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
         ),
-
-        bottomNavigationBar: Theme(
-          data: Theme.of(context).copyWith(canvasColor: Colors.white),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.shifting,
-            currentIndex: current_index,
-            onTap: (index) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => _children[index]),
-              );
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: '홈',
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.search, color:Color(0xff485ed9),),
-                  label: '검색'
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.favorite),
-                  label: '찜'
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle),
-                  label: '내정보'
-              ),
-            ],
-            selectedItemColor: Color(0xff485ed9),
-            unselectedItemColor: Colors.grey,
-            showUnselectedLabels: true,
-          ),
-        )
-    );
-  }
-
+      )
+  );
 }
+
+
 class Search extends SearchDelegate {
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return <Widget>[
@@ -354,21 +315,99 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text(selectedResult),
-      ),
+    int index = studies.indexOf(selectedResult);
+    FirebaseAuth auth = FirebaseAuth.instance;
+    print('🥰🥰🥰🥰🥰🥰🥰🥰🥰');
+    print(index);
+    return ListView(
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            debugPrint(studies[index]);
+            // showPopup(context, studies[index], description[index].toString());
+          },
+          child: Card(
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Image.asset(imageList[0]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Text(
+                        studies[index],
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.55,
+                        child: Text(
+                          number[index],
+                          style: TextStyle(
+                              fontSize: 15, color: Colors.grey[500]),
+                        ),
+                      ),
+
+                    ], //children
+
+                  ),
+                ),
+                Column(
+                    children: [
+                      _buildBody2(context, studies[index], false),
+                      SizedBox(
+                        height: 20,
+                        width: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                            userCollectionReference.update({
+                              'study' : FieldValue.arrayUnion([studies[index]])});
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder( //to set border radius to button
+                                borderRadius: BorderRadius.circular(30)
+                            ),
+                            primary: Color.fromARGB(200,234,254,224),
+                            onPrimary:Colors.green,
+                          ),
+                          child: const Text(
+                            '신청',
+                            style: TextStyle(fontSize: 9),
+                          ),
+                        ),
+                      )
+                    ]
+                )
+              ],
+            ),
+          ),
+        ),
+
+      ],
     );
   }
 
-  final List<String> listExample;
+  final List<dynamic> listExample;
   Search(this.listExample);
 
-  List<String> recentList = [""];
+  List<dynamic> recentList = [""];
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<String> suggestionList = [];
+    List<dynamic> suggestionList = [];
     query.isEmpty
         ? suggestionList = recentList //In the true case
         : suggestionList.addAll(listExample.where(
@@ -391,4 +430,39 @@ class Search extends SearchDelegate {
       },
     );
   }
+}
+
+Widget _buildList2(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot, dynamic study, bool noIcon) {
+  bool contained = false;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  snapshot.data!["heart"].forEach((element) {
+    if(element.compareTo(study)==0) {
+      contained = true;
+      userHeart.add(element["heart"]);
+      print('아아아아아악');
+      print(userHeart);
+    }
+  });
+  if(noIcon) {
+    return Text("");
+  }
+  else return IconButton(
+    icon: Icon (
+      contained ? Icons.favorite : Icons.favorite_border,
+      color: contained ? Colors.red : null,
+      semanticLabel: contained ? 'Remove from saved' : 'Save',),
+    onPressed: () {
+      if (!contained) {
+        final heartCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+        heartCollectionReference.update({'heart':FieldValue.arrayUnion([study])});
+      }
+      else {
+        final heartCollectionReference = FirebaseFirestore.instance.collection(
+            "users").doc(auth.currentUser!.displayName.toString());
+        heartCollectionReference.update(
+            {'heart': FieldValue.arrayRemove([study])});
+      }
+    },
+  );
+
 }

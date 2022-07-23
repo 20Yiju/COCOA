@@ -5,6 +5,15 @@ import 'package:study/func/heartList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/profile.dart';
+late List<dynamic> studies = <dynamic>[];
+late List<dynamic> number = <dynamic>[];
+late List<dynamic> description = <dynamic>[];
+late List<dynamic> url = <dynamic>[];
+late List<dynamic> userHeart = <dynamic>[];
+late List<dynamic> studyHeart = <dynamic>[];
+var imageList = [
+  'image/o.jpeg'
+];
 
 void main() {
   runApp(const StudyList());
@@ -50,59 +59,45 @@ Widget _buildBody(BuildContext context) {
   );
 }
 
+
+Widget _buildBody2(BuildContext context, String study) {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  return StreamBuilder<DocumentSnapshot>(
+    stream: FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.displayName.toString()).snapshots(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) return LinearProgressIndicator();
+
+      return _buildList2(context, snapshot, study);
+    },
+  );
+}
+
 Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
   var user = FirebaseAuth.instance.authStateChanges();
   FirebaseAuth auth = FirebaseAuth.instance;
   List<String> saved = [];
-
   List<String> titleList = [];
 
-
-  late List<dynamic> studies = <dynamic>[];
-  late List<dynamic> number = <dynamic>[];
-  late List<dynamic> description = <dynamic>[];
-  late List<dynamic> url = <dynamic>[];
-  late List<dynamic> userHeart = <dynamic>[];
-  late List<dynamic> studyHeart = <dynamic>[];
-
-
-  final userReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
-  userReference.get().then((value) => {
-    print("value: ${value["heart"]}"),
-    userHeart = value["heart"],
-    print("userHeart: ${userHeart}"),
-  });
+  // userHeart = _buildBody2(context) as List;
 
   // snapshot.data!["study"].forEach((element) {
   //   studies.add(element);
   // });
 
   snapshot.forEach((element) {
-    studies.add(element["studyName"]);
-    number.add(element["number"]);
-    description.add(element["description"]);
-    url.add(element["url"]);
-    if(userHeart.contains(element["studyName"])) studyHeart.add(true);
-    else studyHeart.add(false);
+    if(!studies.contains(element["studyName"])) {
+      studies.add(element["studyName"]);
+      number.add(element["number"]);
+      description.add(element["description"]);
+      url.add(element["url"]);
+      if(userHeart.contains(element["studyName"])) studyHeart.add(true);
+      else studyHeart.add(false);
+    }
   });
+
   print("heart: $userHeart");
   print("studylist: $studies");
 
-
-
-  // print(studies[0]);
-
-//   return ListView(
-//     padding: const EdgeInsets.only(top: 20.0),
-//     children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-//   );
-// }
-
-
-
-  var imageList = [
-    'image/o.jpeg'
-  ];
 
   void showPopup(context, title,explain) {
     showDialog(
@@ -163,170 +158,150 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
 
-   print("length: ${studies.length}");
-
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width * 0.55;
-    return Scaffold(
-        appBar: AppBar(
-          actions: <Widget>[
-            Padding(
-                padding: EdgeInsets.fromLTRB(0,0,0,0),
-                child: IconButton(
-                  onPressed: () {
-                    showSearch(context: context, delegate: Search(studies));
-                  },
-                  icon: Icon(Icons.search, color: Color(0xff485ed9)),
-                )
-            ),
-          ],
-
-          centerTitle: true,
-          title: Text('스터디 검색',
-            style: TextStyle(color: Colors.black),
+  print("length: ${studies.length}");
+  double width = MediaQuery
+      .of(context)
+      .size
+      .width * 0.55;
+  return Scaffold(
+      appBar: AppBar(
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.fromLTRB(0,0,0,0),
+              child: IconButton(
+                onPressed: () {
+                  showSearch(context: context, delegate: Search(studies));
+                },
+                icon: Icon(Icons.search, color: Color(0xff485ed9)),
+              )
           ),
-          backgroundColor: Colors.white,
+        ],
+
+        centerTitle: true,
+        title: Text('스터디 목록',
+          style: TextStyle(color: Colors.black),
         ),
-        body: ListView.builder(
-          itemCount: studies.length,
-          itemBuilder: (context, index) {
-            // final alreadySaved = saved.contains(studies[index]);
-            final currentStudy = FirebaseFirestore.instance.collection("study").doc(studies[index]);
-            return InkWell(
-              onTap: () {
-                debugPrint(studies[index]);
-                showPopup(context, studies[index], description[index].toString());
-              },
-              child: Card(
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: Image.asset(imageList[0]),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          Text(
-                            studies[index],
-                            style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
+        backgroundColor: Colors.white,
+      ),
+      body: ListView.builder(
+        itemCount: studies.length,
+        itemBuilder: (context, index) {
+          // final alreadySaved = saved.contains(studies[index]);
+          final currentStudy = FirebaseFirestore.instance.collection("study").doc(studies[index]);
+          return InkWell(
+            onTap: () {
+              debugPrint(studies[index]);
+              showPopup(context, studies[index], description[index].toString());
+            },
+            child: Card(
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Image.asset(imageList[0]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text(
+                          studies[index],
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: width,
+                          child: Text(
+                            number[index],
+                            style: TextStyle(
+                                fontSize: 15, color: Colors.grey[500]),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            width: width,
-                            child: Text(
-                              number[index],
-                              style: TextStyle(
-                                  fontSize: 15, color: Colors.grey[500]),
-                            ),
-                          ),
+                        ),
 
-                        ], //children
+                      ], //children
 
-                      ),
                     ),
-                    Column(
-                        children: [
-                          IconButton(
-                            icon: Icon (
-                              studyHeart[index] ? Icons.favorite : Icons.favorite_border,
-                              color: studyHeart[index] ? Colors.red : null,
-                              semanticLabel: studyHeart[index] ? 'Remove from saved' : 'Save',),
+                  ),
+                  Column(
+                      children: [
+                        _buildBody2(context, studies[index]),
+                        SizedBox(
+                          height: 20,
+                          width: 50,
+                          child: ElevatedButton(
                             onPressed: () {
-                              // setState(() {
-                              //   if (heart[index]) {
-                              //     heart[index] = false;
-                              //     currentStudy.update({"heart" : false});
-                              //   } else {
-                              //     heart[index] = true;
-                              //     currentStudy.update({"heart" : true});
-                              //   }
-                              // });
-                              },
-                          ),
-                          SizedBox(
-                            height: 20,
-                            width: 50,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
-                                userCollectionReference.update({
-                                  'study' : FieldValue.arrayUnion([studies[index]])});
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder( //to set border radius to button
-                                    borderRadius: BorderRadius.circular(30)
-                                ),
-                                primary:Color.fromARGB(200,234,254,224),
-                                onPrimary:Colors.green,
+                              final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                              userCollectionReference.update({
+                                'study' : FieldValue.arrayUnion([studies[index]])});
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder( //to set border radius to button
+                                  borderRadius: BorderRadius.circular(30)
                               ),
-                              child: const Text(
-                                '신청',
-                                style: TextStyle(fontSize: 9),
-                              ),
-
+                              primary: Color.fromARGB(200,234,254,224),
+                              onPrimary:Colors.green,
                             ),
-                          )
-                        ]
-                    )
-                  ],
-                ),
+                            child: const Text(
+                              '신청',
+                              style: TextStyle(fontSize: 9),
+                            ),
+                          ),
+                        )
+                      ]
+                  )
+                ],
               ),
+            ),
+          );
+        },
+      ),
 
-
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(canvasColor: Colors.white),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.shifting,
+          currentIndex: current_index,
+          onTap: (index) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => _children[index]),
             );
           },
-
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: '홈',
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                label: '검색'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: '찜'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.account_circle),
+                label: '내정보'
+            ),
+          ],
+          selectedItemColor: Color(0xff485ed9),
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
         ),
-
-        bottomNavigationBar: Theme(
-          data: Theme.of(context).copyWith(canvasColor: Colors.white),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.shifting,
-            currentIndex: current_index,
-            onTap: (index) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => _children[index]),
-              );
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: '홈',
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.search, color:Color(0xff485ed9),),
-                  label: '검색'
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.favorite),
-                  label: '찜'
-              ),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle),
-                  label: '내정보'
-              ),
-            ],
-            selectedItemColor: Color(0xff485ed9),
-            unselectedItemColor: Colors.grey,
-            showUnselectedLabels: true,
-          ),
-        )
-    );
-  }
+      )
+  );
+}
 
 
 class Search extends SearchDelegate {
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return <Widget>[
@@ -353,10 +328,144 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text(selectedResult),
-      ),
+    int index = studies.indexOf(selectedResult);
+    FirebaseAuth auth = FirebaseAuth.instance;
+    print('🥰🥰🥰🥰🥰🥰🥰🥰🥰');
+    print(index);
+
+    void showPopup(context, title,explain) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape:RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+            ),
+            content: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.7,
+                height: 300,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10), color: Colors.white),
+                child :SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          explain.toString(), // description[index].toString()
+                          maxLines: 3,
+                          style: TextStyle(fontSize: 15, color: Colors.grey[500]),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('확인',
+                          style: TextStyle( color: Colors.blue),),
+                      ),
+                    ],
+                  ),
+                )
+
+            ),
+          );
+        },
+      );
+    }
+
+    return ListView(
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            debugPrint(studies[index]);
+            showPopup(context, studies[index], description[index].toString());
+          },
+          child: Card(
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Image.asset(imageList[0]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Text(
+                        studies[index],
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.55,
+                        child: Text(
+                          number[index],
+                          style: TextStyle(
+                              fontSize: 15, color: Colors.grey[500]),
+                        ),
+                      ),
+
+                    ], //children
+
+                  ),
+                ),
+                Column(
+                    children: [
+                      _buildBody2(context, studies[index]),
+                      SizedBox(
+                        height: 20,
+                        width: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                            userCollectionReference.update({
+                              'study' : FieldValue.arrayUnion([studies[index]])});
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder( //to set border radius to button
+                                borderRadius: BorderRadius.circular(30)
+                            ),
+                            primary: Color.fromARGB(200,234,254,224),
+                            onPrimary:Colors.green,
+                          ),
+                          child: const Text(
+                            '신청',
+                            style: TextStyle(fontSize: 9),
+                          ),
+                        ),
+                      )
+                    ]
+                )
+              ],
+            ),
+          ),
+        ),
+
+      ],
     );
   }
 
@@ -390,4 +499,33 @@ class Search extends SearchDelegate {
       },
     );
   }
+}
+
+Widget _buildList2(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot, dynamic study) {
+  bool contained = false;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  snapshot.data!["heart"].forEach((element) {
+    if(element.compareTo(study)==0) {
+      contained = true;
+    }
+  });
+  return IconButton(
+    icon: Icon (
+      contained ? Icons.favorite : Icons.favorite_border,
+      color: contained ? Colors.red : null,
+      semanticLabel: contained ? 'Remove from saved' : 'Save',),
+    onPressed: () {
+      if (!contained) {
+        final heartCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+        heartCollectionReference.update({'heart':FieldValue.arrayUnion([study])});
+      }
+      else {
+        final heartCollectionReference = FirebaseFirestore.instance.collection(
+            "users").doc(auth.currentUser!.displayName.toString());
+        heartCollectionReference.update(
+            {'heart': FieldValue.arrayRemove([study])});
+      }
+    },
+  );
+
 }
