@@ -7,8 +7,6 @@ import 'package:study/func/profile.dart';
 import 'package:study/func/heartList.dart';
 import 'package:study/func/addStudy.dart';
 
-import 'calendar/calendar.dart';
-
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -29,10 +27,8 @@ class Home extends StatelessWidget {
 class Routes {
   Routes._();
   static const String Info = "/Info";
-  static const String Calendar = "/Calendar";
   static final routes = <String, WidgetBuilder> {
-  Info: (BuildContext context) => StudyInfo(),
-  // Calendar: (BuildContext context) => Calendar(),
+    Info: (BuildContext context) => StudyInfo()
   };
 }
 
@@ -47,15 +43,49 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  int current_index = 0;
+  int current_index =0;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
   var user = FirebaseAuth.instance.authStateChanges();
   FirebaseAuth auth = FirebaseAuth.instance;
   String department ="";
-
+  // List<String> studylist  = ["1", "2", "3"];
+  // late var studies = [];
   late List<dynamic> studies = <dynamic>[];
   late int ? count;
+  // getdata() async{
+  //   await FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString()).get().then((value){
+  //     setState(() {
+  //       // first add the data to the Offset object
+  //       List.from(value["study"]).forEach((element){
+  //         //Offset data = new Offset(element);
+  //
+  //         //then add the data to the List<Offset>, now we have a type Offset
+  //         print("studies: " + studies[0]);
+  //         studies.add(element);
+  //       });
+  //
+  //     });
+  //   });
+  // }
+
+
+  // getdata() async {
+  //   await FirebaseFirestore.instance
+  //       .collection('users')
+  //       .doc(auth.currentUser!.displayName.toString())
+  //       .snapshots()
+  //       .listen((DocumentSnapshot ds) {
+  //     studies = ds["study"];
+  //     print(studies[0]);
+  //     count = studies.length;
+  //     //print(count);
+  //   });
+  // }
+  // @override
+  // void intiState() {
+  //   super.initState();
+  //   getdata();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -79,15 +109,19 @@ Widget _buildBody(BuildContext context) {
 
 Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
   FirebaseAuth auth = FirebaseAuth.instance;
-  int current_index = 0;
+  int current_index =0;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
   late List<dynamic> studies = <dynamic>[];
+  late List<dynamic> heart = <dynamic>[];
 
+  snapshot.data!["heart"].forEach((element) {
+    heart.add(element);
+  });
   snapshot.data!["study"].forEach((element) {
     studies.add(element);
   });
+  print(studies[0]);
 
-    print(studies[0]);
   print("찍어줘: ${snapshot.data!["study"]}");
   return Scaffold(
     body: Column(
@@ -150,20 +184,20 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                     ),
                     elevation: 4.0,
                     child: Column(
-                        children: [
-                          const SizedBox(height: 10.0, ),
-                         Text(studies[i]),
-                         TextButton(
-                                child: Text("이동",
+                      children: [
+                        const SizedBox(height: 10.0, ),
+                        Text(studies[i]),
+                        TextButton(
+                            child: Text("이동",
                                 style: TextStyle(color:Color(0xff485ed9))),
-                                onPressed: () {
-                                  // Navigator.of(context).push(MaterialPageRoute(
-                                  //     builder: (BuildContext context) => Info(study: studies[i])));
-                                  Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": studies[i]});
-                                }
+                            onPressed: () {
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (BuildContext context) => Info(study: studies[i])));
+                              Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": studies[i]});
+                            }
 
-                          ),
-                        ],
+                        ),
+                      ],
 
                     ),
 
@@ -211,16 +245,16 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
       data: Theme.of(context).copyWith(canvasColor: Colors.white),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
-       currentIndex: current_index,
+        currentIndex: current_index,
         onTap: (index) {
           Navigator.push(
-           context,
-           MaterialPageRoute(builder: (context) => _children[index]),
+            context,
+            MaterialPageRoute(builder: (context) => _children[index]),
           );
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home,color:Color(0xff485ed9),),
+            icon: Icon(Icons.home),
             label: '홈',
           ),
           BottomNavigationBarItem(

@@ -5,6 +5,15 @@ import 'package:study/func/heartList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/profile.dart';
+late List<dynamic> studies = <dynamic>[];
+late List<dynamic> number = <dynamic>[];
+late List<dynamic> description = <dynamic>[];
+late List<dynamic> url = <dynamic>[];
+late List<dynamic> userHeart = <dynamic>[];
+late List<dynamic> studyHeart = <dynamic>[];
+var imageList = [
+  'image/o.jpeg'
+];
 
 void main() {
   runApp(const StudyList());
@@ -50,45 +59,45 @@ Widget _buildBody(BuildContext context) {
   );
 }
 
-Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+
+Widget _buildBody2(BuildContext context, String study) {
+  FirebaseAuth auth = FirebaseAuth.instance;
+  return StreamBuilder<DocumentSnapshot>(
+    stream: FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.displayName.toString()).snapshots(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) return LinearProgressIndicator();
+
+      return _buildList2(context, snapshot, study);
+    },
+  );
+}
+
+Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
   var user = FirebaseAuth.instance.authStateChanges();
-
-  // FirebaseFirestore.instance
-  //     .collection('users')
-  //     .doc("ID OF THE DOCUMENT")
-  //     .get()
-  //     .then((QuerySnapshot querySnapshot) {
-  //   querySnapshot.docs.forEach((doc) {
-  //     print("메롱");
-  //     print(doc["heart"][0]);
-  //   });
-  // });
-
+  FirebaseAuth auth = FirebaseAuth.instance;
   List<String> saved = [];
   List<String> titleList = [];
 
-  late List<dynamic> studies = <dynamic>[];
-  late List<dynamic> number = <dynamic>[];
-  late List<dynamic> description = <dynamic>[];
-  late List<dynamic> url = <dynamic>[];
-  late List<dynamic> heart = <dynamic>[];
+  // userHeart = _buildBody2(context) as List;
+
+  // snapshot.data!["study"].forEach((element) {
+  //   studies.add(element);
+  // });
 
   snapshot.forEach((element) {
-    studies.add(element["studyName"]);
-    number.add(element["number"]);
-    description.add(element["description"]);
-    url.add(element["url"]);
-    heart.add(element["heart"]);
+    if(!studies.contains(element["studyName"])) {
+      studies.add(element["studyName"]);
+      number.add(element["number"]);
+      description.add(element["description"]);
+      url.add(element["url"]);
+      if(userHeart.contains(element["studyName"])) studyHeart.add(true);
+      else studyHeart.add(false);
+    }
   });
 
-  // Stream<QuerySnapshot> queryStream;
-  // queryStream = articlesCollection.where(Fields.section, arrayContainsAny: filters)
-
+  print("heart: $userHeart");
   print("studylist: $studies");
 
-  var imageList = [
-    'image/o.jpeg'
-  ];
 
   void showPopup(context, title,explain) {
     showDialog(
@@ -145,11 +154,11 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
     );
   }
 
-  int current_index = 0;
-  final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
+  int current_index =0;
+  final List<Widget> _children = [Home(), StudyList(), HeartList(), SettingsUI()];
+
 
   print("length: ${studies.length}");
-
   double width = MediaQuery
       .of(context)
       .size
@@ -169,7 +178,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
         ],
 
         centerTitle: true,
-        title: Text('스터디 검색',
+        title: Text('스터디 목록',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
@@ -221,26 +230,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
                   ),
                   Column(
                       children: [
-                        IconButton(
-                          icon: Icon (
-                            heart[index] ? Icons.favorite : Icons.favorite_border,
-                            color: heart[index] ? Colors.red : null,
-                            semanticLabel: heart[index] ? 'Remove from saved' : 'Save',),
-                          onPressed: () {
-                            final heartReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
-                            heartReference.update({
-                              'heart' : FieldValue.arrayUnion([studies[index]])});
-                            // setState(() {
-                            //   if (heart[index]) {
-                            //     heart[index] = false;
-                            //     currentStudy.update({"heart" : false});
-                            //   } else {
-                            //     heart[index] = true;
-                            //     currentStudy.update({"heart" : true});
-                            //   }
-                            // });
-                          },
-                        ),
+                        _buildBody2(context, studies[index]),
                         SizedBox(
                           height: 20,
                           width: 50,
@@ -254,14 +244,13 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
                               shape: RoundedRectangleBorder( //to set border radius to button
                                   borderRadius: BorderRadius.circular(30)
                               ),
-                              primary:Color.fromARGB(200,234,254,224),
+                              primary: Color.fromARGB(200,234,254,224),
                               onPrimary:Colors.green,
                             ),
                             child: const Text(
                               '신청',
                               style: TextStyle(fontSize: 9),
                             ),
-
                           ),
                         )
                       ]
@@ -269,11 +258,8 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
                 ],
               ),
             ),
-
-
           );
         },
-
       ),
 
       bottomNavigationBar: Theme(
@@ -293,7 +279,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
               label: '홈',
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                icon: Icon(Icons.search),
                 label: '검색'
             ),
             BottomNavigationBarItem(
@@ -313,7 +299,9 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
   );
 }
 
+
 class Search extends SearchDelegate {
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return <Widget>[
@@ -340,10 +328,144 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text(selectedResult),
-      ),
+    int index = studies.indexOf(selectedResult);
+    FirebaseAuth auth = FirebaseAuth.instance;
+    print('🥰🥰🥰🥰🥰🥰🥰🥰🥰');
+    print(index);
+
+    void showPopup(context, title,explain) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape:RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+            ),
+            content: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.7,
+                height: 300,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10), color: Colors.white),
+                child :SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          explain.toString(), // description[index].toString()
+                          maxLines: 3,
+                          style: TextStyle(fontSize: 15, color: Colors.grey[500]),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('확인',
+                          style: TextStyle( color: Colors.blue),),
+                      ),
+                    ],
+                  ),
+                )
+
+            ),
+          );
+        },
+      );
+    }
+
+    return ListView(
+      children: <Widget>[
+        InkWell(
+            onTap: () {
+              debugPrint(studies[index]);
+              showPopup(context, studies[index], description[index].toString());
+            },
+            child: Card(
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: Image.asset(imageList[0]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Text(
+                          studies[index],
+                          style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.55,
+                          child: Text(
+                            number[index],
+                            style: TextStyle(
+                                fontSize: 15, color: Colors.grey[500]),
+                          ),
+                        ),
+
+                      ], //children
+
+                    ),
+                  ),
+                  Column(
+                      children: [
+                        _buildBody2(context, studies[index]),
+                        SizedBox(
+                          height: 20,
+                          width: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                              userCollectionReference.update({
+                                'study' : FieldValue.arrayUnion([studies[index]])});
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder( //to set border radius to button
+                                  borderRadius: BorderRadius.circular(30)
+                              ),
+                              primary: Color.fromARGB(200,234,254,224),
+                              onPrimary:Colors.green,
+                            ),
+                            child: const Text(
+                              '신청',
+                              style: TextStyle(fontSize: 9),
+                            ),
+                          ),
+                        )
+                      ]
+                  )
+                ],
+              ),
+            ),
+          ),
+
+      ],
     );
   }
 
@@ -377,4 +499,33 @@ class Search extends SearchDelegate {
       },
     );
   }
+}
+
+Widget _buildList2(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot, dynamic study) {
+  bool contained = false;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  snapshot.data!["heart"].forEach((element) {
+    if(element.compareTo(study)==0) {
+      contained = true;
+    }
+  });
+  return IconButton(
+    icon: Icon (
+      contained ? Icons.favorite : Icons.favorite_border,
+      color: contained ? Colors.red : null,
+      semanticLabel: contained ? 'Remove from saved' : 'Save',),
+    onPressed: () {
+      if (!contained) {
+        final heartCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+        heartCollectionReference.update({'heart':FieldValue.arrayUnion([study])});
+      }
+      else {
+        final heartCollectionReference = FirebaseFirestore.instance.collection(
+            "users").doc(auth.currentUser!.displayName.toString());
+        heartCollectionReference.update(
+            {'heart': FieldValue.arrayRemove([study])});
+      }
+    },
+  );
+
 }

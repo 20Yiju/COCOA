@@ -306,7 +306,7 @@ class _ListViewPageState extends State<ListViewPage> {
                 label: '홈',
               ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                  icon: Icon(Icons.search),
                   label: '검색'
               ),
               BottomNavigationBarItem(

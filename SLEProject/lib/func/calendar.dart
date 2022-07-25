@@ -12,7 +12,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   bool _ischecked = false;
-  String? date; dynamic event;
+  String? date; String? event;
   late Map<DateTime, List<Event>> selectedEvents;
   CalendarFormat format = CalendarFormat.month;
   DateTime selectedDay = DateTime.now();
@@ -179,10 +179,10 @@ class _CalendarState extends State<Calendar> {
                     }
                     event = _eventController.text;
                     print("마지막 확인 $event 그리고 $date");
-                    final calendarReference = FirebaseFirestore.instance.collection("study").doc("아무거나 스터디").collection("calendar").doc(date);
-                    calendarReference.set({
-                      "todo": event,
-                    });
+                    // final calendarReference = FirebaseFirestore.instance.collection("study").doc("os 스터디").collection("calendar").doc(date);
+                    // calendarReference.update({
+                    //   ""
+                    // });
                   }
                   // title : 일정 이름, selectDay
                   //print("title $title, day: $selectedDay");

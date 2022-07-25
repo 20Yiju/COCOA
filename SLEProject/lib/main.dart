@@ -99,7 +99,9 @@ class _StartPageState extends State<StartPage> {
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:study/func/app.dart';
+import 'func/calendar.dart';
 import 'func/home.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -110,12 +112,12 @@ void main() async {
 class MyApp extends StatelessWidget {
 
   Widget build(BuildContext context){
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: App(),
+        home: App(),
     );
   }
 }
