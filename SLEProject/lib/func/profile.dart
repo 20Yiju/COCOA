@@ -52,11 +52,11 @@ Widget _buildBody(BuildContext context) {
 }
 
 Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-
+  FirebaseAuth auth = FirebaseAuth.instance;
   int current_index = 0;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
-  userName = snapshot.data!["userName"];
+  userName = auth.currentUser!.displayName.toString();
   sex = snapshot.data!["sex"];
   department = snapshot.data!["department"];
   grade= snapshot.data!["grade"];

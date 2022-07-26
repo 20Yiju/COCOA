@@ -28,7 +28,7 @@ class Routes {
   Routes._();
   static const String Info = "/Info";
   static final routes = <String, WidgetBuilder> {
-  Info: (BuildContext context) => StudyInfo()
+    Info: (BuildContext context) => StudyInfo()
   };
 }
 
@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // List<String> studylist  = ["1", "2", "3"];
   // late var studies = [];
   late List<dynamic> studies = <dynamic>[];
-   late int ? count;
+  late int ? count;
   // getdata() async{
   //   await FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString()).get().then((value){
   //     setState(() {
@@ -109,20 +109,44 @@ Widget _buildBody(BuildContext context) {
 
 Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
   FirebaseAuth auth = FirebaseAuth.instance;
-  int current_index =0;
+  int current_index = 0;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
-  late List<dynamic> studies = <dynamic>[];
-  late List<dynamic> heart = <dynamic>[];
+  late List<dynamic>? studies = <dynamic>[];
+  late List<dynamic>? heart = <dynamic>[];
 
-  snapshot.data!["heart"].forEach((element) {
-    heart.add(element);
-  });
-  snapshot.data!["study"].forEach((element) {
-    studies.add(element);
-  });
+  /*if(snapshot.data!["heart"] != null){
+    snapshot.data!["heart"].forEach((element) {
+      heart.add(element);
+    });
+  }
+
+  if(snapshot.data!["study"] != null){
+    snapshot.data?["study"].forEach((element) {
+      studies.add(element);
+    });
     print(studies[0]);
-  
-  print("찍어줘: ${snapshot.data!["study"]}");
+
+    print("찍어줘: ${snapshot.data?["study"]}");
+
+  }*/
+  try{
+    snapshot.data!["heart"].forEach((element) {
+      heart.add(element);
+    });
+
+    snapshot.data!["study"].forEach((element) {
+      studies.add(element);
+    });
+
+  } on StateError catch(e){
+    //heart.add(null);
+    //studies.add(null);
+
+  }
+
+
+
+
   return Scaffold(
     body: Column(
       mainAxisSize: MainAxisSize.min,
@@ -170,7 +194,8 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
           ),),
 
         Expanded(
-          child: ListView.builder(
+          child:
+          ListView.builder(
               shrinkWrap: true,
               padding: const EdgeInsets.all(8),
               scrollDirection: Axis.horizontal,
@@ -184,20 +209,20 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                     ),
                     elevation: 4.0,
                     child: Column(
-                        children: [
-                          const SizedBox(height: 10.0, ),
-                         Text(studies[i]),
-                         TextButton(
-                                child: Text("이동",
+                      children: [
+                        const SizedBox(height: 10.0, ),
+                        Text(studies[i]),
+                        TextButton(
+                            child: Text("이동",
                                 style: TextStyle(color:Color(0xff485ed9))),
-                                onPressed: () {
-                                  // Navigator.of(context).push(MaterialPageRoute(
-                                  //     builder: (BuildContext context) => Info(study: studies[i])));
-                                  Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": studies[i]});
-                                }
+                            onPressed: () {
+                              // Navigator.of(context).push(MaterialPageRoute(
+                              //     builder: (BuildContext context) => Info(study: studies[i])));
+                              Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": studies[i]});
+                            }
 
-                          ),
-                        ],
+                        ),
+                      ],
 
                     ),
 
@@ -245,11 +270,11 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
       data: Theme.of(context).copyWith(canvasColor: Colors.white),
       child: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
-       currentIndex: current_index,
+        currentIndex: current_index,
         onTap: (index) {
           Navigator.push(
-           context,
-           MaterialPageRoute(builder: (context) => _children[index]),
+            context,
+            MaterialPageRoute(builder: (context) => _children[index]),
           );
         },
         items: [
