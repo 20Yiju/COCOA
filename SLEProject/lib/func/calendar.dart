@@ -7,10 +7,15 @@ import 'package:study/func/home.dart';
 
 class Calendar extends StatefulWidget {
   @override
+
+  final String appbarTitle;
+  Calendar({Key ?key, required this.appbarTitle}) : super(key: key);
+  
   _CalendarState createState() => _CalendarState();
 }
 
 class _CalendarState extends State<Calendar> {
+
   bool _ischecked = false;
   String? date; String? event;
   late Map<DateTime, List<Event>> selectedEvents;
@@ -41,7 +46,7 @@ class _CalendarState extends State<Calendar> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("스터디 일정",
+        title: Text("${widget.appbarTitle} 스터디 일정",
             style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,
@@ -56,7 +61,8 @@ class _CalendarState extends State<Calendar> {
               color: Colors.white,
             ),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => StudyInfo()));
             }
         ),
       ),
@@ -179,7 +185,7 @@ class _CalendarState extends State<Calendar> {
                     }
                     event = _eventController.text;
                     //print("마지막 확인 $event 그리고 $date");
-                    final calendarReference = FirebaseFirestore.instance.collection("study").doc("os 스터디");
+                    final calendarReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle);
                     calendarReference.update({'$date' : FieldValue.arrayUnion([event])});
                   }
                   // title : 일정 이름, selectDay
