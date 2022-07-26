@@ -48,44 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
   var user = FirebaseAuth.instance.authStateChanges();
   FirebaseAuth auth = FirebaseAuth.instance;
   String department ="";
-  // List<String> studylist  = ["1", "2", "3"];
-  // late var studies = [];
+
   late List<dynamic> studies = <dynamic>[];
   late int ? count;
-  // getdata() async{
-  //   await FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString()).get().then((value){
-  //     setState(() {
-  //       // first add the data to the Offset object
-  //       List.from(value["study"]).forEach((element){
-  //         //Offset data = new Offset(element);
-  //
-  //         //then add the data to the List<Offset>, now we have a type Offset
-  //         print("studies: " + studies[0]);
-  //         studies.add(element);
-  //       });
-  //
-  //     });
-  //   });
-  // }
-
-
-  // getdata() async {
-  //   await FirebaseFirestore.instance
-  //       .collection('users')
-  //       .doc(auth.currentUser!.displayName.toString())
-  //       .snapshots()
-  //       .listen((DocumentSnapshot ds) {
-  //     studies = ds["study"];
-  //     print(studies[0]);
-  //     count = studies.length;
-  //     //print(count);
-  //   });
-  // }
-  // @override
-  // void intiState() {
-  //   super.initState();
-  //   getdata();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -114,21 +79,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
   late List<dynamic>? studies = <dynamic>[];
   late List<dynamic>? heart = <dynamic>[];
 
-  /*if(snapshot.data!["heart"] != null){
-    snapshot.data!["heart"].forEach((element) {
-      heart.add(element);
-    });
-  }
-
-  if(snapshot.data!["study"] != null){
-    snapshot.data?["study"].forEach((element) {
-      studies.add(element);
-    });
-    print(studies[0]);
-
-    print("찍어줘: ${snapshot.data?["study"]}");
-
-  }*/
   try{
     snapshot.data!["heart"].forEach((element) {
       heart.add(element);
@@ -141,7 +91,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
   } on StateError catch(e){
     //heart.add(null);
     //studies.add(null);
-
   }
 
 
@@ -184,7 +133,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                   padding: new EdgeInsets.all(30.0),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Text("${auth.currentUser!.displayName.toString()}" ,style: TextStyle(fontSize: 18)),
+                    child: Text("${auth.currentUser!.displayName.toString()}" ,style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                   ),
                 ),
               ),
@@ -204,24 +153,37 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                 return SizedBox(
                   height: 80, width: 300,
                   child: Card(
+                    color: Colors.white70,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16.0),
-                    ),
+                      side: BorderSide(
+                        color: Colors.grey.withOpacity(0.2),
+                        width: 2,
+                      ), ),
                     elevation: 4.0,
                     child: Column(
                       children: [
-                        const SizedBox(height: 10.0, ),
-                        Text(studies[i]),
-                        TextButton(
-                            child: Text("이동",
-                                style: TextStyle(color:Color(0xff485ed9))),
-                            onPressed: () {
-                              // Navigator.of(context).push(MaterialPageRoute(
-                              //     builder: (BuildContext context) => Info(study: studies[i])));
-                              Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": studies[i]});
-                            }
-
+                        const SizedBox(height: 20.0, ),
+                        Text(studies[i], style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500)),
+                        const SizedBox(height: 70.0, ),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": studies[i]});
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder( //to set border radius to button
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            primary: Colors.grey,
+                            //onPrimary:Colors.white70,
+                          ),
+                          child: const Text(
+                            '이동',
+                            style: TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.w600),
+                          ),
                         ),
+
+
                       ],
 
                     ),
@@ -303,3 +265,27 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
   );
 
 }
+/*
+class MyCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      child: new Card(
+        child: new Center(
+          child: new Icon(
+            Icons.refresh,
+            size: 150.0,
+          ),
+        ),
+      ),
+      decoration: new BoxDecoration(
+        boxShadow: [
+          new BoxShadow(
+            color: Colors.black,
+            blurRadius: 20.0,
+          ),
+        ],
+      ),
+    );
+  }
+} */
