@@ -9,8 +9,9 @@ late List<dynamic> studies = <dynamic>[];
 late List<dynamic> number = <dynamic>[];
 late List<dynamic> description = <dynamic>[];
 late List<dynamic> url = <dynamic>[];
-late List<dynamic> userHeart = <dynamic>[];
 late List<dynamic> studyHeart = <dynamic>[];
+late List<dynamic> userHeart = <dynamic>[];
+
 var imageList = [
   'image/o.jpeg'
 ];
@@ -95,9 +96,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
     }
   });
 
-  print("heart: $userHeart");
   print("studylist: $studies");
-
 
   void showPopup(context, title,explain) {
     showDialog(
@@ -155,7 +154,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
   }
 
   int current_index =0;
-  final List<Widget> _children = [Home(), StudyList(), HeartList(), SettingsUI()];
+  final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
 
   print("length: ${studies.length}");
@@ -279,7 +278,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
               label: '홈',
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search),
+                icon: Icon(Icons.search, color:Color(0xff485ed9),),
                 label: '검색'
             ),
             BottomNavigationBarItem(
@@ -391,79 +390,79 @@ class Search extends SearchDelegate {
     return ListView(
       children: <Widget>[
         InkWell(
-            onTap: () {
-              debugPrint(studies[index]);
-              showPopup(context, studies[index], description[index].toString());
-            },
-            child: Card(
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: Image.asset(imageList[0]),
+          onTap: () {
+            debugPrint(studies[index]);
+            showPopup(context, studies[index], description[index].toString());
+          },
+          child: Card(
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Image.asset(imageList[0]),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Text(
+                        studies[index],
+                        style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width * 0.55,
+                        child: Text(
+                          number[index],
+                          style: TextStyle(
+                              fontSize: 15, color: Colors.grey[500]),
+                        ),
+                      ),
+
+                    ], //children
+
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        Text(
-                          studies[index],
-                          style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.55,
-                          child: Text(
-                            number[index],
-                            style: TextStyle(
-                                fontSize: 15, color: Colors.grey[500]),
+                ),
+                Column(
+                    children: [
+                      _buildBody2(context, studies[index]),
+                      SizedBox(
+                        height: 20,
+                        width: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                            userCollectionReference.update({
+                              'study' : FieldValue.arrayUnion([studies[index]])});
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder( //to set border radius to button
+                                borderRadius: BorderRadius.circular(30)
+                            ),
+                            primary: Color.fromARGB(200,234,254,224),
+                            onPrimary:Colors.green,
+                          ),
+                          child: const Text(
+                            '신청',
+                            style: TextStyle(fontSize: 9),
                           ),
                         ),
-
-                      ], //children
-
-                    ),
-                  ),
-                  Column(
-                      children: [
-                        _buildBody2(context, studies[index]),
-                        SizedBox(
-                          height: 20,
-                          width: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
-                              userCollectionReference.update({
-                                'study' : FieldValue.arrayUnion([studies[index]])});
-                            },
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder( //to set border radius to button
-                                  borderRadius: BorderRadius.circular(30)
-                              ),
-                              primary: Color.fromARGB(200,234,254,224),
-                              onPrimary:Colors.green,
-                            ),
-                            child: const Text(
-                              '신청',
-                              style: TextStyle(fontSize: 9),
-                            ),
-                          ),
-                        )
-                      ]
-                  )
-                ],
-              ),
+                      )
+                    ]
+                )
+              ],
             ),
           ),
+        ),
 
       ],
     );
@@ -527,5 +526,4 @@ Widget _buildList2(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapsho
       }
     },
   );
-
 }

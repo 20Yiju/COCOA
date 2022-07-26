@@ -109,20 +109,44 @@ Widget _buildBody(BuildContext context) {
 
 Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
   FirebaseAuth auth = FirebaseAuth.instance;
-  int current_index =0;
+  int current_index = 0;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
-  late List<dynamic> studies = <dynamic>[];
-  late List<dynamic> heart = <dynamic>[];
+  late List<dynamic>? studies = <dynamic>[];
+  late List<dynamic>? heart = <dynamic>[];
 
-  snapshot.data!["heart"].forEach((element) {
-    heart.add(element);
-  });
-  snapshot.data!["study"].forEach((element) {
-    studies.add(element);
-  });
-  print(studies[0]);
+  /*if(snapshot.data!["heart"] != null){
+    snapshot.data!["heart"].forEach((element) {
+      heart.add(element);
+    });
+  }
 
-  print("찍어줘: ${snapshot.data!["study"]}");
+  if(snapshot.data!["study"] != null){
+    snapshot.data?["study"].forEach((element) {
+      studies.add(element);
+    });
+    print(studies[0]);
+
+    print("찍어줘: ${snapshot.data?["study"]}");
+
+  }*/
+  try{
+    snapshot.data!["heart"].forEach((element) {
+      heart.add(element);
+    });
+
+    snapshot.data!["study"].forEach((element) {
+      studies.add(element);
+    });
+
+  } on StateError catch(e){
+    //heart.add(null);
+    //studies.add(null);
+
+  }
+
+
+
+
   return Scaffold(
     body: Column(
       mainAxisSize: MainAxisSize.min,
@@ -170,7 +194,8 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
           ),),
 
         Expanded(
-          child: ListView.builder(
+          child:
+          ListView.builder(
               shrinkWrap: true,
               padding: const EdgeInsets.all(8),
               scrollDirection: Axis.horizontal,
@@ -254,7 +279,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home,color:Color(0xff485ed9),),
             label: '홈',
           ),
           BottomNavigationBarItem(
