@@ -33,6 +33,7 @@ class AddStateWidget extends State<AddStatefulWidget> {
   final inputController2 = TextEditingController();
   final inputController3 = TextEditingController();
   final inputController4 = TextEditingController();
+  final inputController5 = TextEditingController();
 
 
   @override
@@ -42,7 +43,8 @@ class AddStateWidget extends State<AddStatefulWidget> {
           title: Text('새로운 스터디 등록'),
           leading:  IconButton(
               onPressed: () {
-                Navigator.pop(context); //뒤로가기
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => Home())); //뒤로가기
               },
               color: Colors.white,
               icon: Icon(Icons.arrow_back)),
@@ -70,6 +72,24 @@ class AddStateWidget extends State<AddStatefulWidget> {
                           }
                         },
                         controller: inputController1
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(30.0),
+                      child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: '방장 이름',
+                          ),
+                          onChanged: (String? newValue) {
+                            name = newValue!;
+                            print(name);
+                          },
+                          validator: (value) {
+                            if(value!.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                          },
+                          controller: inputController5
                       ),
                     ),
                     Padding(
@@ -151,6 +171,7 @@ class AddStateWidget extends State<AddStatefulWidget> {
                               "description": inputController3.text,
                               "url": inputController4.text,
                               "heart": false,
+                              "hostName": inputController5.text,
                             });
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) => Home()));

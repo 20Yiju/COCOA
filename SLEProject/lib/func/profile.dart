@@ -57,9 +57,17 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
   userName = auth.currentUser!.displayName.toString();
-  sex = snapshot.data!["sex"];
-  department = snapshot.data!["department"];
-  grade= snapshot.data!["grade"];
+  try{
+    sex = snapshot.data!["sex"];
+    department = snapshot.data!["department"];
+    grade= snapshot.data!["grade"];
+
+  } on StateError catch(e){
+    //heart.add(null);
+    //studies.add(null);
+
+  }
+
 
     return Scaffold(
 
