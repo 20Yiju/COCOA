@@ -396,44 +396,44 @@ class Search extends SearchDelegate {
                 ),
                 Column(
                     children: [
-                        IconButton(
-                          icon: Icon (
-                            contained[index]? Icons.favorite : Icons.favorite_border,
-                            color: contained[index] ? Colors.red : null,
-                            semanticLabel: contained[index] ? 'Remove from saved' : 'Save',),
-                          onPressed: () {
-                            contained.removeAt(index);
-                            // firebase update
-                            final heartCollectionReference = FirebaseFirestore.instance.collection(
-                                "users").doc(auth.currentUser!.displayName.toString());
-                            String sName = userHeart[index];
-                            heartCollectionReference.update(
-                                {'heart': FieldValue.arrayRemove([sName])});
-                            userHeart.removeAt(index);
-                          },
-                        ),
-                        // SizedBox(
-                        //   height: 20,
-                        //   width: 50,
-                        // ),
-                        ElevatedButton(
-                          onPressed: () {
-                            final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
-                            userCollectionReference.update({
-                              'study' : FieldValue.arrayUnion([userHeart[index]])});
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder( //to set border radius to button
-                                borderRadius: BorderRadius.circular(30)
-                            ),
-                            primary: Color.fromARGB(200,234,254,224),
-                            onPrimary:Colors.green,
+                      IconButton(
+                        icon: Icon (
+                          contained[index]? Icons.favorite : Icons.favorite_border,
+                          color: contained[index] ? Colors.red : null,
+                          semanticLabel: contained[index] ? 'Remove from saved' : 'Save',),
+                        onPressed: () {
+                          contained.removeAt(index);
+                          // firebase update
+                          final heartCollectionReference = FirebaseFirestore.instance.collection(
+                              "users").doc(auth.currentUser!.displayName.toString());
+                          String sName = userHeart[index];
+                          heartCollectionReference.update(
+                              {'heart': FieldValue.arrayRemove([sName])});
+                          userHeart.removeAt(index);
+                        },
+                      ),
+                      // SizedBox(
+                      //   height: 20,
+                      //   width: 50,
+                      // ),
+                      ElevatedButton(
+                        onPressed: () {
+                          final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
+                          userCollectionReference.update({
+                            'study' : FieldValue.arrayUnion([userHeart[index]])});
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder( //to set border radius to button
+                              borderRadius: BorderRadius.circular(30)
                           ),
-                          child: const Text(
-                            '신청',
-                            style: TextStyle(fontSize: 9),
-                          ),
+                          primary: Color.fromARGB(200,234,254,224),
+                          onPrimary:Colors.green,
                         ),
+                        child: const Text(
+                          '신청',
+                          style: TextStyle(fontSize: 9),
+                        ),
+                      ),
 
 
                     ]
@@ -483,10 +483,10 @@ class Search extends SearchDelegate {
 List<dynamic> saveUserHeart(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot, List<dynamic> studie) {
   List<dynamic> userHeart = <dynamic>[];
   snapshot.data!["heart"].forEach((element) {
-    if(studies.contains(element)==0) {;
-    userHeart.add(element["heart"]);
-    print('아아아아아악');
-    print(userHeart);
+    if(studies.contains(element)==0) {
+      userHeart.add(element["heart"]);
+      print('아아아아아악');
+      print(userHeart);
     }
   });
   return userHeart;
@@ -503,4 +503,3 @@ List<dynamic> findIndex(BuildContext context, List<dynamic> studies, List<dynami
   return index;
 
 }
-

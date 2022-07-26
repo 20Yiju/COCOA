@@ -9,14 +9,14 @@ class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Study Info",
+        debugShowCheckedModeBanner: false,
+        title: "Study Info",
         initialRoute: 'StudyInfo',
         routes: {
           "StudyInfo": (context) =>  StudyInfo(),
           'calendar': (context) =>  Calendar(),
         }
-     // home: StudyInfo(),
+      // home: StudyInfo(),
     );
   }
 }
@@ -33,7 +33,6 @@ class StudyInfo extends StatefulWidget {
   @override
   _StudyInfo createState() => _StudyInfo();
 }
-
 String url = "";
 String description = "";
 
@@ -130,25 +129,14 @@ class _StudyInfo extends State<StudyInfo> {
                           const EdgeInsets.fromLTRB(30, 10, 30, 10),
                         ),
                         backgroundColor: MaterialStateProperty.all(
-                            //Color.fromARGB(255, 74, 170, 248)
+                          //Color.fromARGB(255, 74, 170, 248)
                             Color(0xff485ed9)
                         ),
                       ),
 
                       onPressed: () {
-                        // Get.to(() => Calendar(), arguments: study
-                        // Navigator.of(context).pushNamed(Routes.Calendar, arguments: {"study": study});
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => Calendar(study: study),
-                        //     ));
-                        // Navigator.pushNamed(
-                        //   context, 'calender', arguments: study,
-                        // );
                         Navigator.push(
                             context, MaterialPageRoute(builder: (_) => Calendar()));
-                       // );
                       },
                       child: Text('일정 페이지로 이동',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),

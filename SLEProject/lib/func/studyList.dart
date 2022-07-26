@@ -9,9 +9,8 @@ late List<dynamic> studies = <dynamic>[];
 late List<dynamic> number = <dynamic>[];
 late List<dynamic> description = <dynamic>[];
 late List<dynamic> url = <dynamic>[];
-late List<dynamic> studyHeart = <dynamic>[];
 late List<dynamic> userHeart = <dynamic>[];
-
+late List<dynamic> studyHeart = <dynamic>[];
 var imageList = [
   'image/o.jpeg'
 ];
@@ -96,7 +95,9 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
     }
   });
 
+  print("heart: $userHeart");
   print("studylist: $studies");
+
 
   void showPopup(context, title,explain) {
     showDialog(
@@ -526,4 +527,5 @@ Widget _buildList2(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapsho
       }
     },
   );
+
 }
