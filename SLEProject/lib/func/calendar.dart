@@ -61,8 +61,9 @@ class _CalendarState extends State<Calendar> {
               color: Colors.white,
             ),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => StudyInfo()));
+              // Navigator.of(context).push(MaterialPageRoute(
+              //     builder: (BuildContext context) => StudyInfo()));
+              Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": widget.appbarTitle});
             }
         ),
       ),

@@ -43,7 +43,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int current_index =0;
+  int current_index = 0;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
   var user = FirebaseAuth.instance.authStateChanges();
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -133,7 +133,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                   padding: new EdgeInsets.all(30.0),
                   child: Align(
                     alignment: Alignment.bottomCenter,
-                    child: Text("${auth.currentUser!.displayName.toString()}" ,style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                    child: Text("${auth.currentUser!.displayName.toString()}" ,style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
                   ),
                 ),
               ),
@@ -164,7 +164,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                     child: Column(
                       children: [
                         const SizedBox(height: 20.0, ),
-                        Text(studies[i], style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w500)),
+                        Text(studies[i], style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.w600)),
                         const SizedBox(height: 70.0, ),
                         ElevatedButton(
                           onPressed: () {
@@ -241,7 +241,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
         },
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home,color:Color(0xff485ed9),),
+            icon: Icon(Icons.home, color:Color(0xff485ed9),),
             label: '홈',
           ),
           BottomNavigationBarItem(
@@ -253,11 +253,12 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
               label: '찜'
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
-              label: '내정보'
+            icon: Icon(Icons.account_circle),
+            label: '내정보',
           ),
         ],
         selectedItemColor: Color(0xff485ed9),
+        // selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
       ),
@@ -265,27 +266,3 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
   );
 
 }
-/*
-class MyCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-      child: new Card(
-        child: new Center(
-          child: new Icon(
-            Icons.refresh,
-            size: 150.0,
-          ),
-        ),
-      ),
-      decoration: new BoxDecoration(
-        boxShadow: [
-          new BoxShadow(
-            color: Colors.black,
-            blurRadius: 20.0,
-          ),
-        ],
-      ),
-    );
-  }
-} */

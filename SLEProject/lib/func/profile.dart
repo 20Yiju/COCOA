@@ -53,7 +53,7 @@ Widget _buildBody(BuildContext context) {
 
 Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
   FirebaseAuth auth = FirebaseAuth.instance;
-  int current_index = 0;
+  int current_index = 3;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
   userName = auth.currentUser!.displayName.toString();
@@ -133,11 +133,11 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
             },
             items: [
               BottomNavigationBarItem(
-                icon: Icon(Icons.home),
+                icon: Icon(Icons.home, color: Colors.grey),
                 label: '홈',
               ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                  icon: Icon(Icons.search,),
                   label: '검색'
               ),
               BottomNavigationBarItem(
@@ -145,7 +145,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                   label: '찜'
               ),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle),
+                  icon: Icon(Icons.account_circle, color:Color(0xff485ed9),),
                   label: '내정보'
               ),
             ],

@@ -12,6 +12,7 @@ late List<dynamic> userHeart = <dynamic>[];
 late List<dynamic> studyHeart = <dynamic>[];
 late List<dynamic> contained = <dynamic>[]; // true false
 late List<dynamic> idx = <dynamic>[]; // userHeart와 studyHeart 겹치는 index
+late List<dynamic> member = <dynamic>[];
 var imageList = [
   'image/o.jpeg'
 ];
@@ -81,6 +82,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
       number.add(element["number"]);
       description.add(element["description"]);
       url.add(element["url"]);
+      member.add(element["member"]);
     }
   });
 
@@ -157,7 +159,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
     );
   }
 
-  int current_index =0;
+  int current_index =2;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
 
@@ -219,7 +221,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
                         SizedBox(
                           width: width,
                           child: Text(
-                            number[idx[index]],
+                            '${member[idx[index]]}/${number[idx[index]]}',
                             style: TextStyle(
                                 fontSize: 15, color: Colors.grey[500]),
                           ),
@@ -252,10 +254,23 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
                           height: 20,
                           width: 50,
                           child: ElevatedButton(
+
                             onPressed: () {
-                              final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
-                              userCollectionReference.update({
-                                'study' : FieldValue.arrayUnion([userHeart[index]])});
+                              if(int.parse(number[idx[index]]) == member[idx[index]]) showPopup2(context);
+                              else {
+                                final userCollectionReference = FirebaseFirestore
+                                    .instance.collection("users").doc(
+                                    auth.currentUser!.displayName.toString());
+                                userCollectionReference.update({
+                                  'study': FieldValue.arrayUnion(
+                                      [userHeart[index]])});
+                                final studyCollectionReference = FirebaseFirestore
+                                    .instance.collection("study").doc(
+                                    studies[index]);
+                                studyCollectionReference.update({
+                                  'member': member[index] + 1});
+                                print("member count: ${member[index]}");
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder( //to set border radius to button
@@ -292,15 +307,15 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
           },
           items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home, color: Colors.grey),
               label: '홈',
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                icon: Icon(Icons.search,),
                 label: '검색'
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
+                icon: Icon(Icons.favorite, color:Color(0xff485ed9),),
                 label: '찜'
             ),
             BottomNavigationBarItem(
@@ -384,7 +399,7 @@ class Search extends SearchDelegate {
                             .size
                             .width * 0.55,
                         child: Text(
-                          number[idx[index]],
+    '${member[idx[index]]}/${number[idx[index]]}',
                           style: TextStyle(
                               fontSize: 15, color: Colors.grey[500]),
                         ),
@@ -418,9 +433,21 @@ class Search extends SearchDelegate {
                       // ),
                       ElevatedButton(
                         onPressed: () {
-                          final userCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString());
-                          userCollectionReference.update({
-                            'study' : FieldValue.arrayUnion([userHeart[index]])});
+                            if(int.parse(number[idx[index]]) == member[idx[index]]) showPopup2(context);
+                            else {
+                              final userCollectionReference = FirebaseFirestore
+                                  .instance.collection("users").doc(
+                                  auth.currentUser!.displayName.toString());
+                              userCollectionReference.update({
+                                'study': FieldValue.arrayUnion(
+                                    [userHeart[index]])});
+                              final studyCollectionReference = FirebaseFirestore
+                                  .instance.collection("study").doc(
+                                  studies[index]);
+                              studyCollectionReference.update({
+                                'member': member[index] + 1});
+                              print("member count: ${member[index]}");
+                            }
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder( //to set border radius to button
@@ -503,3 +530,58 @@ List<dynamic> findIndex(BuildContext context, List<dynamic> studies, List<dynami
   return index;
 
 }
+
+void showPopup2(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        shape:RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+        content: Container(
+            width: MediaQuery
+                .of(context)
+                .size
+                .width * 0.7,
+            height: 150,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.white),
+            child :SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    '마감',
+                    style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Text(
+                      '인원 마감되었습니다!',
+                      style: TextStyle(fontSize: 15, color: Colors.grey[500]),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('확인',
+                      style: TextStyle( color: Colors.blue),),
+                  ),
+                ],
+              ),
+            )
+
+        ),
+      );
+    },
+  );
+}
+
