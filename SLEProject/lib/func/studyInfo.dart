@@ -14,7 +14,7 @@ class Info extends StatelessWidget {
         initialRoute: 'StudyInfo',
         routes: {
           "StudyInfo": (context) =>  StudyInfo(),
-          'calendar': (context) =>  Calendar(),
+          'calendar': (context) =>  Calendar(appbarTitle: '',),
         }
       // home: StudyInfo(),
     );
@@ -33,125 +33,163 @@ class StudyInfo extends StatefulWidget {
   @override
   _StudyInfo createState() => _StudyInfo();
 }
-String url = "";
-String description = "";
+// String url = "";
+// String description = "";
 
 class _StudyInfo extends State<StudyInfo> {
   late final study;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final Map arguments = ModalRoute.of(context)?.settings.arguments as Map;
+    final Map arguments = ModalRoute
+        .of(context)
+        ?.settings
+        .arguments as Map;
     if (arguments != null) {
       study = arguments["study"] as String;
       print("study: " + study);
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    print("study22: " + study);
-    FirebaseFirestore.instance.collection("study")
-        .doc(study)
-        .get()
-        .then((DocumentSnapshot ds) {
-      url = ds["url"];
-      description = ds["description"];
-      print(url);
-      print(description);
-    });
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        elevation: 1,
-        leading: IconButton(
-          icon: Icon(
-            Icons.home,
-            color: Color(0xff485ed9),
-          ),
-          onPressed: () {Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => Home()));},
-        ),
-
-      ),
-      body: Container(
-        padding: EdgeInsets.only(left: 5, top: 25, right: 5),
-        child: Builder(
-          builder: (context) => Scaffold(
-            body: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 32),
-              physics: BouncingScrollPhysics(),
-              children: [
-                SizedBox(height: 10,),
-                Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.only(left: 2),
-                    child: Text(
-                        study,
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold
-                        )
-                    )),
-                const SizedBox(height: 40),
-                Text('방장', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
-                ),
-
-                const SizedBox(height: 10),
-                Text('전산전자공학부 김예인', style: TextStyle(fontSize: 16, color: Colors.black)
-                ),
-                const SizedBox(height: 30),
-                Text("카카오톡 오픈채팅방 링크", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
-                ),
-                const SizedBox(height: 10),
-                Text(url, style: TextStyle(fontSize: 16, color: Colors.black)
-                ),
-                const SizedBox(height: 30),
-                Text('멤버별 성취도', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
-                ),
-                const SizedBox(height: 90),
-                TextFieldWidget(
-                  label: '스터디 설명',
-                  text: description,
-                  maxLines: 10,
-                ),
-                const SizedBox(height: 15),
-                Center(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)
-                          ),
-                        ),
-                        padding: MaterialStateProperty.all(
-                          const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                        ),
-                        backgroundColor: MaterialStateProperty.all(
-                          //Color.fromARGB(255, 74, 170, 248)
-                            Color(0xff485ed9)
-                        ),
-                      ),
-
-                      onPressed: () {
-                        Navigator.push(
-                            context, MaterialPageRoute(builder: (_) => Calendar()));
-                      },
-                      child: Text('일정 페이지로 이동',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
-                    )
-                ),
-              ],
-            ),
-          ),
-        ),
-
-      ),
+      body: _buildBody(context, study),
     );
   }
 }
+
+Widget _buildBody(BuildContext context, String study) {
+  return StreamBuilder<DocumentSnapshot>(
+    stream: FirebaseFirestore.instance.collection('study').doc(study).snapshots(),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) return LinearProgressIndicator();
+
+      return _buildList(context, snapshot, study);
+    },
+  );
+}
+
+Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot, String study) {
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   print("study22: " + study);
+  //   FirebaseFirestore.instance.collection("study")
+  //       .doc(study)
+  //       .get()
+  //       .then((DocumentSnapshot ds) {
+  //     url = ds["url"];
+  //     description = ds["description"];
+  //     print(url);
+  //     print(description);
+  //   });
+  return Scaffold(
+    appBar: AppBar(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      elevation: 1,
+      leading: IconButton(
+        icon: Icon(
+          Icons.home,
+          color: Color(0xff485ed9),
+        ),
+        onPressed: () {Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => Home()));},
+      ),
+
+    ),
+    body: Container(
+      padding: EdgeInsets.only(left: 5, top: 25, right: 5),
+      child: Builder(
+        builder: (context) => Scaffold(
+          body: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 32),
+            physics: BouncingScrollPhysics(),
+            children: [
+              SizedBox(height: 10,),
+              Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.only(left: 2),
+                  child: Text(
+                      study,
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold
+                      )
+                  )),
+              const SizedBox(height: 40),
+              Text('방장', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
+              ),
+
+              const SizedBox(height: 10),
+              Text(snapshot.data!["hostName"], style: TextStyle(fontSize: 16, color: Colors.black)
+              ),
+              const SizedBox(height: 30),
+              Text("카카오톡 오픈채팅방 링크", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
+              ),
+              const SizedBox(height: 10),
+              Text(snapshot.data!["url"], style: TextStyle(fontSize: 16, color: Colors.black)
+              ),
+              const SizedBox(height: 30),
+              Text('멤버별 성취도', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xff485ed9))
+              ),
+              const SizedBox(height: 90),
+              TextFieldWidget(
+                label: '스터디 설명',
+                text: snapshot.data!["description"],
+                maxLines: 10,
+              ),
+              const SizedBox(height: 15),
+              Center(
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)
+                        ),
+                      ),
+                      padding: MaterialStateProperty.all(
+                        const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                      ),
+                      backgroundColor: MaterialStateProperty.all(
+                        //Color.fromARGB(255, 74, 170, 248)
+                          Color(0xff485ed9)
+                      ),
+                    ),
+
+                    onPressed: () {
+                      // Get.to(() => Calendar(), arguments: study
+                      // Navigator.of(context).pushNamed(Routes.Calendar, arguments: {"study": study});
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => Calendar(study: study),
+                      //     ));
+                      // Navigator.pushNamed(
+                      //   context, 'calender', arguments: study,
+                      // );
+                      Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => Calendar(appbarTitle : study)));
+                      // );
+                    },
+                    child: Text('일정 페이지로 이동',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+
+                  )
+              ),
+            ],
+          ),
+        ),
+      ),
+
+    ),
+  );
+}
+
+
 
 class TextFieldWidget extends StatefulWidget {
   final int maxLines;
@@ -209,7 +247,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
                   maxLines: 10,
                   strutStyle: StrutStyle(fontSize: 10),
                   text: TextSpan(
-                      text: description,
+                      text: widget.text,
                       style: TextStyle(fontSize: 16, color: Colors.grey)
                   )))
 

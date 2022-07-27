@@ -157,7 +157,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
     );
   }
 
-  int current_index =0;
+  int current_index =2;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
 
@@ -296,11 +296,11 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
               label: '홈',
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search, color:Color(0xff485ed9),),
+                icon: Icon(Icons.search),
                 label: '검색'
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
+                icon: Icon(Icons.favorite,color:Color(0xff485ed9),),
                 label: '찜'
             ),
             BottomNavigationBarItem(
