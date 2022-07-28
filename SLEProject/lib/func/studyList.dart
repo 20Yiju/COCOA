@@ -85,11 +85,6 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
   List<String> saved = [];
   List<String> titleList = [];
 
-  // userHeart = _buildBody2(context) as List;
-
-  // snapshot.data!["study"].forEach((element) {
-  //   studies.add(element);
-  // });
 
   snapshot.forEach((element) {
     if(!studies.contains(element["studyName"])) {

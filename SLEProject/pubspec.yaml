@@ -40,6 +40,8 @@ dependencies:
   table_calendar: ^3.0.6
   cloud_firestore: ^3.3.0
   get: ^4.6.5
+  flutter_native_splash: ^2.2.6
+
 
 dev_dependencies:
   flutter_test:
@@ -68,15 +70,10 @@ flutter:
      - assets/images/user.png
      - assets/images/logo3.png
      - image/
-
   fonts:
     - family: Suit
       fonts:
         - asset: fonts/SUIT-Medium.ttf
-    - family: Single
-      fonts:
-        - asset: fonts/SingleDay-Regular.ttf
-
 
       # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

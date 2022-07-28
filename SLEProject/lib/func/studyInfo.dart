@@ -25,20 +25,10 @@ class Info extends StatelessWidget {
   }
 }
 
-// class Routes {
-//   Routes._();
-//   static const String Calendar = "/Calendar";
-//   static final routes = <String, WidgetBuilder> {
-//     Calendar : (BuildContext context) => Calendar()
-//   };
-// }
-
 class StudyInfo extends StatefulWidget {
   @override
   _StudyInfo createState() => _StudyInfo();
 }
-// String url = "";
-// String description = "";
 
 class _StudyInfo extends State<StudyInfo> {
   late final study;
@@ -77,19 +67,6 @@ Widget _buildBody(BuildContext context, String study) {
 }
 
 Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot, String study) {
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   print("study22: " + study);
-  //   FirebaseFirestore.instance.collection("study")
-  //       .doc(study)
-  //       .get()
-  //       .then((DocumentSnapshot ds) {
-  //     url = ds["url"];
-  //     description = ds["description"];
-  //     print(url);
-  //     print(description);
-  //   });
   return Scaffold(
     appBar: AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -165,16 +142,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                     ),
 
                     onPressed: () {
-                      // Get.to(() => Calendar(), arguments: study
-                      // Navigator.of(context).pushNamed(Routes.Calendar, arguments: {"study": study});
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => Calendar(study: study),
-                      //     ));
-                      // Navigator.pushNamed(
-                      //   context, 'calender', arguments: study,
-                      // );
                       Navigator.push(
                           context, MaterialPageRoute(builder: (context) => Calendar(appbarTitle : study)));
                       // );

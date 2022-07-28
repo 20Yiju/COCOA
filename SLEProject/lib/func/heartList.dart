@@ -26,10 +26,7 @@ class HeartList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        fontFamily: 'Suit',
-      ),
+    return const MaterialApp(
       home: ListViewPage(),
     );
   }
@@ -261,6 +258,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
                             onPressed: () {
                               if(int.parse(number[idx[index]]) == member[idx[index]]) showPopup2(context);
                               else {
+                                FlutterDialog(context);
                                 final userCollectionReference = FirebaseFirestore
                                     .instance.collection("users").doc(
                                     auth.currentUser!.displayName.toString());
@@ -363,6 +361,60 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    void showPopup(context, title, explain) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            shape:RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+            ),
+            content: Container(
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width * 0.7,
+                height: 300,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10), color: Colors.white),
+                child :SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          explain.toString(), // description[index].toString()
+                          maxLines: 3,
+                          style: TextStyle(fontSize: 15, color: Colors.grey[500]),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('확인',
+                          style: TextStyle( color: Colors.blue),),
+                      ),
+                    ],
+                  ),
+                )
+
+            ),
+          );
+        },
+      );
+    }
     int index = userHeart.indexOf(selectedResult);
     FirebaseAuth auth = FirebaseAuth.instance;
     print('🥰🥰🥰🥰🥰🥰🥰🥰🥰');
@@ -372,7 +424,7 @@ class Search extends SearchDelegate {
         InkWell(
           onTap: () {
             debugPrint(userHeart[index]);
-            // showPopup(context, studies[index], description[index].toString());
+            showPopup(context, studies[index], description[index].toString());
           },
           child: Card(
             child: Row(
@@ -402,7 +454,7 @@ class Search extends SearchDelegate {
                             .size
                             .width * 0.55,
                         child: Text(
-    '${member[idx[index]]}/${number[idx[index]]}',
+                          '${member[idx[index]]}/${number[idx[index]]}',
                           style: TextStyle(
                               fontSize: 15, color: Colors.grey[500]),
                         ),
@@ -436,21 +488,22 @@ class Search extends SearchDelegate {
                       // ),
                       ElevatedButton(
                         onPressed: () {
-                            if(int.parse(number[idx[index]]) == member[idx[index]]) showPopup2(context);
-                            else {
-                              final userCollectionReference = FirebaseFirestore
-                                  .instance.collection("users").doc(
-                                  auth.currentUser!.displayName.toString());
-                              userCollectionReference.update({
-                                'study': FieldValue.arrayUnion(
-                                    [userHeart[index]])});
-                              final studyCollectionReference = FirebaseFirestore
-                                  .instance.collection("study").doc(
-                                  studies[index]);
-                              studyCollectionReference.update({
-                                'member': member[index] + 1});
-                              print("member count: ${member[index]}");
-                            }
+                          if(int.parse(number[idx[index]]) == member[idx[index]]) showPopup2(context);
+                          else {
+                            final userCollectionReference = FirebaseFirestore
+                                .instance.collection("users").doc(
+                                auth.currentUser!.displayName.toString());
+                            userCollectionReference.update({
+                              'study': FieldValue.arrayUnion(
+                                  [userHeart[index]])});
+                            final studyCollectionReference = FirebaseFirestore
+                                .instance.collection("study").doc(
+                                studies[index]);
+                            studyCollectionReference.update({
+                              'member': member[index] + 1});
+                            print("member count: ${member[index]}");
+                          }
+
                         },
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder( //to set border radius to button
@@ -524,14 +577,53 @@ List<dynamic> saveUserHeart(BuildContext context, AsyncSnapshot<DocumentSnapshot
 
 List<dynamic> findIndex(BuildContext context, List<dynamic> studies, List<dynamic> userHeart) {
   List<dynamic> index = <dynamic>[];
-  for(int i=0; i<studies.length; i++) {
-    if (userHeart.contains(studies[i])) {
-      contained.add(true);
-      index.add(i);
-    }
+  for(int i=0; i<userHeart.length; i++) {
+    contained.add(true);
+    index.add(studies.indexOf(userHeart[i]));
   }
   return index;
 
+}
+void FlutterDialog(BuildContext context) {
+  showDialog(
+      context: context,
+      //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)),
+          //Dialog Main Title
+          title: Column(
+            children: <Widget>[
+              new Text("신청 완료",
+                style: TextStyle( color: Colors.black),),
+            ],
+          ),
+          //
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "신청이 완료되었습니다",
+                style: TextStyle( color: Colors.grey),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("확인",
+                style: TextStyle( color: Colors.blue),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      });
 }
 
 void showPopup2(BuildContext context) {

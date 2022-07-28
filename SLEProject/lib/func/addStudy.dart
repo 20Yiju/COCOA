@@ -30,6 +30,7 @@ class AddStatefulWidget extends StatefulWidget {
 
 class AddStateWidget extends State<AddStatefulWidget> {
   late String name, number, description, url;
+  FirebaseAuth auth = FirebaseAuth.instance;
   final inputController1 = TextEditingController();
   final inputController2 = TextEditingController();
   final inputController3 = TextEditingController();
@@ -165,15 +166,29 @@ class AddStateWidget extends State<AddStatefulWidget> {
                           ),
 
                           onPressed: () {
-                            final userCollectionReference = FirebaseFirestore.instance.collection("study").doc(inputController1.text);
-                            userCollectionReference.set({
+                            final userCollectionReference = FirebaseFirestore
+                                .instance.collection("users").doc(
+                                auth.currentUser!.displayName.toString());
+                            userCollectionReference.update({
+                              'study': FieldValue.arrayUnion(
+                                  [name])});
+
+                            // final studyCollectionReference = FirebaseFirestore
+                            //     .instance.collection("study").doc(
+                            //     inputController1.text);
+                            // studyCollectionReference.update({
+                            //   'member': 1 });
+                            // print("member count: ${member[index]}");
+
+                            final studyCollectionReference = FirebaseFirestore.instance.collection("study").doc(inputController1.text);
+                            studyCollectionReference.set({
                               "studyName": inputController1.text,
                               "number": inputController2.text,
                               "description": inputController3.text,
                               "url": inputController4.text,
                               "heart": false,
                               "hostName": inputController5.text,
-                              "member": 0,
+                              "member": 1,
                             });
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) => Home()));
