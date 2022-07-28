@@ -607,7 +607,7 @@ void FlutterDialog(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                "신청이 완료되었습니다",
+                "신청이 완료되었습니다!",
                 style: TextStyle( color: Colors.grey),
               ),
             ],

@@ -27,11 +27,7 @@ class StudyList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        fontFamily: 'Suit',
-        primarySwatch: Colors.blue,
-      ),
+    return const MaterialApp(
       home: ListViewPage(),
     );
   }
@@ -85,6 +81,11 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
   List<String> saved = [];
   List<String> titleList = [];
 
+  // userHeart = _buildBody2(context) as List;
+
+  // snapshot.data!["study"].forEach((element) {
+  //   studies.add(element);
+  // });
 
   snapshot.forEach((element) {
     if(!studies.contains(element["studyName"])) {
@@ -240,12 +241,13 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
                           height: 20,
                           width: 50,
                           child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: ()  {
                               if(int.parse(number[index]) == member[index]) {
                                 showPopup2(context);
                                 print("!!!!!!!!!!!!!!정원다참!!!!!!!!!!!!!!!!!");
                               }
                               else {
+                                FlutterDialog(context);
                                 final userCollectionReference = FirebaseFirestore
                                     .instance.collection("users").doc(
                                     auth.currentUser!.displayName.toString());
@@ -278,6 +280,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
                 ],
               ),
             ),
+
           );
         },
       ),
@@ -560,6 +563,47 @@ Widget _buildList2(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapsho
     },
   );
 
+}
+void FlutterDialog(BuildContext context) {
+  showDialog(
+      context: context,
+      //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)),
+          //Dialog Main Title
+          title: Column(
+            children: <Widget>[
+              new Text("신청 완료",
+                style: TextStyle( color: Colors.black),),
+            ],
+          ),
+          //
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "신청이 완료되었습니다!",
+                style: TextStyle( color: Colors.grey),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("확인",
+                style: TextStyle( color: Colors.blue),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      });
 }
 
 void showPopup2(BuildContext context) {
