@@ -13,6 +13,9 @@ class SettingsUI extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'Suit',
+      ),
       debugShowCheckedModeBanner: false,
       title: "Setting UI",
       home: EditProfilePage(),
@@ -133,7 +136,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
           },
           items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home, color: Colors.grey),
               label: '홈',
             ),
             BottomNavigationBarItem(
@@ -145,7 +148,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                 label: '찜'
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle,color:Color(0xff485ed9),),
+                icon: Icon(Icons.account_circle, color:Color(0xff485ed9),),
                 label: '내정보'
             ),
           ],

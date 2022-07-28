@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:study/func/studyInfo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:study/func/home.dart';
 
 class Calendar extends StatefulWidget {
   @override
+
   final String appbarTitle;
-  Calendar({Key? key, required this.appbarTitle}) : super(key: key);
-  
+  Calendar({Key ?key, required this.appbarTitle}) : super(key: key);
+
   _CalendarState createState() => _CalendarState();
 }
 
@@ -22,7 +24,6 @@ class _CalendarState extends State<Calendar> {
   DateTime focusedDay = DateTime.now();
 
   TextEditingController _eventController = TextEditingController();
-
 
   @override
   void initState() {
@@ -60,9 +61,7 @@ class _CalendarState extends State<Calendar> {
               color: Colors.white,
             ),
             onPressed: () {
-              // Navigator.push(
-                  // context, MaterialPageRoute(builder: (context) => StudyInfo(study : appbarTitle)));
-
+              Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": widget.appbarTitle});
             }
         ),
       ),
@@ -75,6 +74,7 @@ class _CalendarState extends State<Calendar> {
                 firstDay: DateTime(1990),
                 lastDay: DateTime(2050),
                 calendarFormat: format,
+
                 onFormatChanged: (CalendarFormat _format) {
                   setState(() {
                     format = _format;
@@ -89,6 +89,7 @@ class _CalendarState extends State<Calendar> {
                     selectedDay = selectDay;
                     focusedDay = focusDay;
                   });
+
                   print(focusedDay);
                   date = focusedDay.toString();
 
@@ -149,6 +150,7 @@ class _CalendarState extends State<Calendar> {
                   },
                 ),
               ),
+              // if (event.value) print(event.title);
             ],
           ),
         ),
@@ -184,12 +186,14 @@ class _CalendarState extends State<Calendar> {
                       ];
                     }
                     event = _eventController.text;
-
                     //print("마지막 확인 $event 그리고 $date");
-                    if (date == null) date = selectedDay.toString();
                     final calendarReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle);
                     calendarReference.update({'$date' : FieldValue.arrayUnion([event])});
                   }
+                  // title : 일정 이름, selectDay
+                  //print("title $title, day: $selectedDay");
+                  //print("title title, day: $selectedDay");
+
 
                   Navigator.pop(context);
                   _eventController.clear();

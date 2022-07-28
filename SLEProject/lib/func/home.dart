@@ -17,6 +17,7 @@ class Home extends StatelessWidget {
       title: 'Flutter Demo',
       routes: Routes.routes,
       theme: ThemeData(
+        fontFamily: 'Suit',
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -253,8 +254,8 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
               label: '찜'
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
-              label: '내정보',
+            icon: Icon(Icons.account_circle),
+            label: '내정보',
           ),
         ],
         selectedItemColor: Color(0xff485ed9),

@@ -69,7 +69,16 @@ flutter:
      - assets/images/logo3.png
      - image/
 
-  # An image asset can refer to one or more resolution-specific "variants", see
+  fonts:
+    - family: Suit
+      fonts:
+        - asset: fonts/SUIT-Medium.ttf
+    - family: Single
+      fonts:
+        - asset: fonts/SingleDay-Regular.ttf
+
+
+      # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see

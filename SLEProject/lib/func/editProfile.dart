@@ -13,6 +13,9 @@ class Edit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'Suit',
+      ),
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title), backgroundColor: Color(0xff485ed9)),

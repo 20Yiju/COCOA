@@ -27,7 +27,11 @@ class StudyList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'Suit',
+        primarySwatch: Colors.blue,
+      ),
       home: ListViewPage(),
     );
   }

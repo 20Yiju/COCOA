@@ -12,6 +12,7 @@ class AddStudy extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        fontFamily: 'Suit',
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
@@ -172,6 +173,7 @@ class AddStateWidget extends State<AddStatefulWidget> {
                               "url": inputController4.text,
                               "heart": false,
                               "hostName": inputController5.text,
+                              "member": 0,
                             });
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) => Home()));

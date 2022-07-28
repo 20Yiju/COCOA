@@ -9,6 +9,10 @@ class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+        theme: ThemeData(
+          fontFamily: 'Suit',
+          primarySwatch: Colors.blue,
+        ),
         debugShowCheckedModeBanner: false,
         title: "Study Info",
         initialRoute: 'StudyInfo',
