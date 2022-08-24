@@ -424,7 +424,7 @@ class Search extends SearchDelegate {
         InkWell(
           onTap: () {
             debugPrint(userHeart[index]);
-            showPopup(context, studies[index], description[index].toString());
+            showPopup(context, userHeart[index], description[idx[index]].toString());
           },
           child: Card(
             child: Row(

@@ -171,7 +171,7 @@ class AddStateWidget extends State<AddStatefulWidget> {
                                 auth.currentUser!.displayName.toString());
                             userCollectionReference.update({
                               'study': FieldValue.arrayUnion(
-                                  [name])});
+                                  [inputController1.text])});
 
                             // final studyCollectionReference = FirebaseFirestore
                             //     .instance.collection("study").doc(
