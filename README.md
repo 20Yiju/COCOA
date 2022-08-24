@@ -8,15 +8,16 @@
 한동대학교 학생들을 대상으로 하는 스터디 그룹 매칭 및 일정 관리  앱 
 
 # 개발스택 설명
-
+<div>
 <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the badge&logo=Flutter&logoColor=white" width="100" height="40">   
 <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the badge&logo=Firebase&logoColor=white" width="100" height="40">
-	 
- >Cloud Firestore 사용해 데이터를 관리함   
+</div>
+
+  >Cloud Firestore 사용해 데이터를 관리함     
 
 # 프로젝트 상세 설명
 
-**'한동 스터디 매칭 앱'** 은  .... 목표로 하고 있다. 
+**'한동 스터디 매칭 앱'** 은  같이 공부할 스터디원을 찾고 있는 재학생들에게 스터디 그룹 매칭을 도와주고 스터디 일정을 관리할 수 있는 서비스를 제공해 그룹원들이 학습에 있어서 긍정적인 시너지 효과를 얻는 것을 목표로 하고 있다. 
 
 이 앱은 그룹 스터디를 하고자 하는 재학생들이 손쉽게 그룹을 서치하고 원하는 그룹에  참여하여 스터디를 진행할 수 있는 환경을 제공한다.  또한 그룹 내에서의 효율적인 일정 파악 및 관리를 위한 기능이 있다. 이외에도 자신이 찜한 스터디 그룹을 볼 수 있으며 프로필 설정과 같은 기본적인 기능도 갖추어져 있다. 
 
