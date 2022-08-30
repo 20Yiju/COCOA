@@ -7,7 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/home.dart';
 late Map<DateTime, List<Event>> selectedEvents = {};
 // late Map<DateTime, List<bool>> completedEvents = {};
-
+//
+//
 String? date; String? event;
 
 class Calendar extends StatefulWidget {

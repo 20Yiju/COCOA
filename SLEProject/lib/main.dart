@@ -103,8 +103,6 @@ import 'package:study/func/app.dart';
 import 'func/calendar.dart';
 import 'func/home.dart';
 import 'package:get/get.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
