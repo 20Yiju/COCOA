@@ -172,6 +172,10 @@ class AddStateWidget extends State<AddStatefulWidget> {
                             userCollectionReference.update({
                               'study': FieldValue.arrayUnion(
                                   [inputController1.text])});
+                            userCollectionReference.collection("achievement").doc(inputController1.text).set({
+                              "개인별": 0,
+                              "성취도": 0,
+                            });
 
                             // final studyCollectionReference = FirebaseFirestore
                             //     .instance.collection("study").doc(

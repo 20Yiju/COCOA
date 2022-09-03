@@ -1,3 +1,6 @@
+import 'dart:core';
+import 'dart:core';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:study/func/calendar/event.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +9,12 @@ import 'package:study/func/studyInfo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/home.dart';
 late Map<DateTime, List<Event>> selectedEvents = {};
+late Map<String, List<String>> userName = {};
 // late Map<DateTime, List<bool>> completedEvents = {};
 //
 //
 String? date; String? event;
+int complete = 0;
 
 class Calendar extends StatefulWidget {
   @override
@@ -23,7 +28,7 @@ class Calendar extends StatefulWidget {
 Widget _buildBody2(BuildContext context, String study) {
   FirebaseAuth auth = FirebaseAuth.instance;
   return StreamBuilder<QuerySnapshot>(
-    stream: FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection(study).snapshots(),
+    stream: FirebaseFirestore.instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").snapshots(),
     builder: (context, snapshot) {
       if (!snapshot.hasData) return LinearProgressIndicator();
       return _buildBody(context, study, snapshot.data!.docs);
@@ -33,6 +38,13 @@ Widget _buildBody2(BuildContext context, String study) {
 
 Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> userSnapshot) {
   print("buildBody 호출!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  userSnapshot.forEach((element) {
+    print("element: ${element["studyName"]}");
+    if(study.compareTo(element["studyName"])==0) {
+      complete = element["개인별"];
+      print("개인별: $complete");
+    }
+  });
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance.collection("study").doc(study).collection("calendar").snapshots(),
     builder: (context, snapshot) {
@@ -59,9 +71,27 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
                   ];
                 }
               }
+              for(String str in element[s]) { // str이 유저네임..
+                print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰: ${(element["date"]+s)}");
+                if (userName[(element["date"]+s)] != null) {
+                  if(str != null) {
+                    userName[(element["date"]+s)]?.add(
+                      str,
+                    );
+                  }
+                } else {
+                  if(str != null) {
+                    userName[(element["date"]+s)] = [
+                      str,
+                    ];
+                  }
+                }
+
+              }
             }
           }
           print("selectedEvents $selectedEvents");
+          print("userName $userName");
         });
       }
       return Text('');
@@ -241,18 +271,56 @@ class _CalendarState extends State<Calendar> {
                     ),
                   ),
                   ..._getEventsfromDay(selectedDay).map(
-                        (Event event) =>  CheckboxListTile(
-                      title: Text(event.title,),
-                      activeColor: Colors.redAccent,
-                      checkColor: Colors.black,
-                      selected: _ischecked,
-                      value: _ischecked,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _ischecked = value!;
-                        });
-                      },
-                    ),
+                        (Event event) {
+                      if(userName.containsKey(selectedDay.toString()+(event.title))) {
+                        if(userName[selectedDay.toString()+(event.title)] != null) {
+                          if(userName[selectedDay.toString()+(event.title)]?.contains(auth.currentUser!.displayName.toString()) == true) {
+                            _ischecked = true;
+                            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!포함된다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                          } else _ischecked = false;
+
+                        }
+                        //for(String name : userName[selectedDay.toString()+(event.title)])
+                      }
+
+                      return CheckboxListTile(
+                        title: Text(event.title,),
+                        activeColor: Colors.redAccent,
+                        checkColor: Colors.black,
+                        selected: _ischecked,
+                        value: _ischecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _ischecked = value!;
+                            //print("check했고 selectedDay 포맷은??:  $selectedDay");
+                            final calendarCollectionReference = FirebaseFirestore
+                                .instance.collection("study").doc(
+                                widget.appbarTitle)
+                                .collection("calendar")
+                                .doc('$selectedDay');
+                            if (_ischecked) { //사용자가 완료 체크를 했을 때
+
+                              calendarCollectionReference.update({
+                                event.title: FieldValue.arrayUnion([
+                                  auth.currentUser!.displayName.toString()
+                                ])
+                              });
+                              userName[selectedDay.toString()+(event.title)]?.add(auth.currentUser!.displayName.toString());
+                            } else { // 사용자가 완료 체크를 해제했을 때
+                              /*
+                            문서에 배열 필드가 포함되어 있으면 arrayUnion() 및 arrayRemove()를 사용해 요소를 추가하거나 삭제할 수 있습니다. arrayUnion()은 배열에 없는 요소만 추가하고, arrayRemove()는 제공된 각 요소의 모든 인스턴스를 삭제합니다.
+                             */
+                              calendarCollectionReference.update({
+                                event.title: FieldValue.arrayRemove([
+                                  auth.currentUser!.displayName.toString()
+                                ])
+                              });
+                              userName[selectedDay.toString()+(event.title)]?.remove(auth.currentUser!.displayName.toString());
+                            }
+                          });
+                        },
+                      );
+                    },
                   ),
                 ],
               ),
@@ -289,7 +357,7 @@ class _CalendarState extends State<Calendar> {
                       );
                       event = _eventController.text;
                       final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc(date);
-                      calendarCollectionReference.update({'todo': FieldValue.arrayUnion([event]), 'date': date});
+                      calendarCollectionReference.update({'todo': FieldValue.arrayUnion([event]), 'date': date, '$event': FieldValue.arrayUnion(["null"])});
 
                     } else {
                       event = _eventController.text;
@@ -297,7 +365,8 @@ class _CalendarState extends State<Calendar> {
                         Event(title: _eventController.text)
                       ];
                       final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc(date);
-                      calendarCollectionReference.set({'todo': FieldValue.arrayUnion([event]), 'date': date});
+                      calendarCollectionReference.set({'todo': FieldValue.arrayUnion([event]), 'date': date, '$event': FieldValue.arrayUnion(["null"])});
+
                     }
                     //print("마지막 확인 $event 그리고 $date");
                     print('selectedDay: $selectedDay');

@@ -265,6 +265,10 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
                                 userCollectionReference.update({
                                   'study': FieldValue.arrayUnion(
                                       [userHeart[index]])});
+                                userCollectionReference.collection("achievement").doc(studies[index]).set({
+                                  "개인별": 0,
+                                  "성취도": 0,
+                                });
                                 final studyCollectionReference = FirebaseFirestore
                                     .instance.collection("study").doc(
                                     studies[index]);
@@ -444,7 +448,7 @@ class Search extends SearchDelegate {
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Colors.black),
-                      ),
+                       ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -496,6 +500,10 @@ class Search extends SearchDelegate {
                             userCollectionReference.update({
                               'study': FieldValue.arrayUnion(
                                   [userHeart[index]])});
+                            userCollectionReference.collection("achievement").doc(studies[index]).set({
+                              "개인별": 0,
+                              "성취도": 0,
+                            });
                             final studyCollectionReference = FirebaseFirestore
                                 .instance.collection("study").doc(
                                 studies[index]);

@@ -254,6 +254,10 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
                                 userCollectionReference.update({
                                   'study': FieldValue.arrayUnion(
                                       [studies[index]])});
+                                userCollectionReference.collection("achievement").doc(studies[index]).set({
+                                  "개인별": 0,
+                                  "성취도": 0,
+                                });
                                 final studyCollectionReference = FirebaseFirestore
                                     .instance.collection("study").doc(
                                     studies[index]);
@@ -472,6 +476,10 @@ class Search extends SearchDelegate {
                               userCollectionReference.update({
                                 'study': FieldValue.arrayUnion(
                                     [studies[index]])});
+                              userCollectionReference.collection("achievement").doc(studies[index]).set({
+                                "개인별": 0,
+                                "성취도": 0,
+                              });
                               final studyCollectionReference = FirebaseFirestore
                                   .instance.collection("study").doc(
                                   studies[index]);
