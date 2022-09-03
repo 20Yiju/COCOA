@@ -15,6 +15,7 @@ late Map<String, List<String>> userName = {};
 //
 String? date; String? event;
 int complete = 0;
+int totalNum = 0;
 
 class Calendar extends StatefulWidget {
   @override
@@ -54,45 +55,50 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
       else {
         snapshot.data!.docs.forEach((element) {
           print("snapshot 반복문 돌아감");
-          print("element[date]: ${DateTime.parse(element["date"])}");
-          if (!selectedEvents.containsKey(DateTime.parse(element["date"]))) {
+          //print("element[date]: ${DateTime.parse(element["date"])}");
+          if(element["date"].compareTo("일정개수") == 0) {
+            totalNum = element["개수"];
+            print("개수: $totalNum");
+          }
+          else {
+            if (!selectedEvents.containsKey(DateTime.parse(element["date"]))) {
 
-            for(String s in element["todo"]) {
-              if (selectedEvents[DateTime.parse(element["date"])] != null) {
-                if(s!=null) {
-                  selectedEvents[DateTime.parse(element["date"])]?.add(
-                    Event(title: s),
-                  );
-                }
-              } else {
-                if(s!=null) {
-                  selectedEvents[DateTime.parse(element["date"])] = [
-                    Event(title: s),
-                  ];
-                }
-              }
-              for(String str in element[s]) { // str이 유저네임..
-                print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰: ${(element["date"]+s)}");
-                if (userName[(element["date"]+s)] != null) {
-                  if(str != null) {
-                    userName[(element["date"]+s)]?.add(
-                      str,
+              for(String s in element["todo"]) {
+                if (selectedEvents[DateTime.parse(element["date"])] != null) {
+                  if(s!=null) {
+                    selectedEvents[DateTime.parse(element["date"])]?.add(
+                      Event(title: s),
                     );
                   }
                 } else {
-                  if(str != null) {
-                    userName[(element["date"]+s)] = [
-                      str,
+                  if(s!=null) {
+                    selectedEvents[DateTime.parse(element["date"])] = [
+                      Event(title: s),
                     ];
                   }
                 }
+                for(String str in element[s]) { // str이 유저네임..
+                  print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰: ${(element["date"]+s)}");
+                  if (userName[(element["date"]+s)] != null) {
+                    if(str != null) {
+                      userName[(element["date"]+s)]?.add(
+                        str,
+                      );
+                    }
+                  } else {
+                    if(str != null) {
+                      userName[(element["date"]+s)] = [
+                        str,
+                      ];
+                    }
+                  }
 
+                }
               }
             }
-          }
-          print("selectedEvents $selectedEvents");
-          print("userName $userName");
-        });
+            print("selectedEvents $selectedEvents");
+            print("userName $userName");
+        }});
       }
       return Text('');
     },
@@ -298,14 +304,20 @@ class _CalendarState extends State<Calendar> {
                                 widget.appbarTitle)
                                 .collection("calendar")
                                 .doc('$selectedDay');
+                            final achievementCollectionReference = FirebaseFirestore
+                                .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
                             if (_ischecked) { //사용자가 완료 체크를 했을 때
-
                               calendarCollectionReference.update({
                                 event.title: FieldValue.arrayUnion([
                                   auth.currentUser!.displayName.toString()
                                 ])
                               });
                               userName[selectedDay.toString()+(event.title)]?.add(auth.currentUser!.displayName.toString());
+                              complete++;
+                              achievementCollectionReference.update({
+                                '개인별': complete
+                              });
+
                             } else { // 사용자가 완료 체크를 해제했을 때
                               /*
                             문서에 배열 필드가 포함되어 있으면 arrayUnion() 및 arrayRemove()를 사용해 요소를 추가하거나 삭제할 수 있습니다. arrayUnion()은 배열에 없는 요소만 추가하고, arrayRemove()는 제공된 각 요소의 모든 인스턴스를 삭제합니다.
@@ -316,6 +328,10 @@ class _CalendarState extends State<Calendar> {
                                 ])
                               });
                               userName[selectedDay.toString()+(event.title)]?.remove(auth.currentUser!.displayName.toString());
+                              complete--;
+                              achievementCollectionReference.update({
+                                '개인별': complete
+                              });
                             }
                           });
                         },
@@ -350,6 +366,7 @@ class _CalendarState extends State<Calendar> {
                   if (_eventController.text.isEmpty) {
 
                   } else {
+                    totalNum++;
                     if (selectedEvents[selectedDay] != null) {
 
                       selectedEvents[selectedDay]?.add(
@@ -358,6 +375,11 @@ class _CalendarState extends State<Calendar> {
                       event = _eventController.text;
                       final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc(date);
                       calendarCollectionReference.update({'todo': FieldValue.arrayUnion([event]), 'date': date, '$event': FieldValue.arrayUnion(["null"])});
+                      final totalNumCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("일정개수");
+                      totalNumCollectionReference.update({'개수': totalNum});
+                      final achievementCollectionReference = FirebaseFirestore
+                          .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
+                      achievementCollectionReference.update({"성취도": ((complete/totalNum)*100).floor()});
 
                     } else {
                       event = _eventController.text;
@@ -366,6 +388,12 @@ class _CalendarState extends State<Calendar> {
                       ];
                       final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc(date);
                       calendarCollectionReference.set({'todo': FieldValue.arrayUnion([event]), 'date': date, '$event': FieldValue.arrayUnion(["null"])});
+                      final totalNumCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("일정개수");
+                      totalNumCollectionReference.update({'개수': totalNum});
+                      final achievementCollectionReference = FirebaseFirestore
+                          .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
+                      achievementCollectionReference.update({"성취도": ((complete/totalNum)*100).floor()});
+
 
                     }
                     //print("마지막 확인 $event 그리고 $date");
