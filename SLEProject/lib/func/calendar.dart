@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:core';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:study/func/calendar/event.dart';
@@ -10,9 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/home.dart';
 late Map<DateTime, List<Event>> selectedEvents = {};
 late Map<String, List<String>> userName = {};
-// late Map<DateTime, List<bool>> completedEvents = {};
-//
-//
+late Map<String, int> memberComplete = {};
+
+
 String? date; String? event;
 int complete = 0;
 int totalNum = 0;
@@ -38,27 +37,33 @@ Widget _buildBody2(BuildContext context, String study) {
 }
 
 Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> userSnapshot) {
-  print("buildBody 호출!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+ // print("buildBody 호출!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   userSnapshot.forEach((element) {
-    print("element: ${element["studyName"]}");
+   // print("element: ${element["studyName"]}");
     if(study.compareTo(element["studyName"])==0) {
       complete = element["개인별"];
-      print("개인별: $complete");
+     // print("개인별: $complete");
     }
   });
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance.collection("study").doc(study).collection("calendar").snapshots(),
     builder: (context, snapshot) {
-      print("스트림 빌더");
+    //  print("스트림 빌더");
       if (!snapshot.hasData) return LinearProgressIndicator();
 
       else {
         snapshot.data!.docs.forEach((element) {
-          print("snapshot 반복문 돌아감");
+         // print("snapshot 반복문 돌아감");
           //print("element[date]: ${DateTime.parse(element["date"])}");
           if(element["date"].compareTo("일정개수") == 0) {
             totalNum = element["개수"];
             print("개수: $totalNum");
+          }
+          else if(element["date"].compareTo("멤버별성취도") == 0) {
+            for(String m in element["member"]) {
+              memberComplete[m] = element[m]["완료개수"];
+            }
+            print("멤버별 완료개수: $memberComplete");
           }
           else {
             if (!selectedEvents.containsKey(DateTime.parse(element["date"]))) {
@@ -96,8 +101,8 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
                 }
               }
             }
-            print("selectedEvents $selectedEvents");
-            print("userName $userName");
+         //   print("selectedEvents $selectedEvents");
+         //   print("userName $userName");
         }});
       }
       return Text('');
@@ -299,39 +304,53 @@ class _CalendarState extends State<Calendar> {
                           setState(() {
                             _ischecked = value!;
                             //print("check했고 selectedDay 포맷은??:  $selectedDay");
-                            final calendarCollectionReference = FirebaseFirestore
+                            final completeUserReference = FirebaseFirestore
                                 .instance.collection("study").doc(
                                 widget.appbarTitle)
                                 .collection("calendar")
                                 .doc('$selectedDay');
                             final achievementCollectionReference = FirebaseFirestore
                                 .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
+                            final memberAchieveReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("멤버별성취도");
+
                             if (_ischecked) { //사용자가 완료 체크를 했을 때
-                              calendarCollectionReference.update({
+                              complete++;
+                              completeUserReference.update({
                                 event.title: FieldValue.arrayUnion([
                                   auth.currentUser!.displayName.toString()
                                 ])
                               });
+                              print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰Complete: $complete");
                               userName[selectedDay.toString()+(event.title)]?.add(auth.currentUser!.displayName.toString());
-                              complete++;
                               achievementCollectionReference.update({
-                                '개인별': complete
+                                '개인별': complete,
+                                '성취도': ((complete/totalNum)*100).floor()
                               });
+                              memberAchieveReference.update({auth.currentUser!.displayName.toString(): {
+                                '완료개수': complete,
+                                '성취도': ((complete / totalNum) * 100).floor()
+                              }});
 
                             } else { // 사용자가 완료 체크를 해제했을 때
                               /*
                             문서에 배열 필드가 포함되어 있으면 arrayUnion() 및 arrayRemove()를 사용해 요소를 추가하거나 삭제할 수 있습니다. arrayUnion()은 배열에 없는 요소만 추가하고, arrayRemove()는 제공된 각 요소의 모든 인스턴스를 삭제합니다.
                              */
-                              calendarCollectionReference.update({
+                              complete--;
+                              completeUserReference.update({
                                 event.title: FieldValue.arrayRemove([
                                   auth.currentUser!.displayName.toString()
                                 ])
                               });
+                              print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰Complete: $complete");
                               userName[selectedDay.toString()+(event.title)]?.remove(auth.currentUser!.displayName.toString());
-                              complete--;
                               achievementCollectionReference.update({
-                                '개인별': complete
+                                '개인별': complete,
+                                '성취도': ((complete/totalNum)*100).floor()
                               });
+                              memberAchieveReference.update({auth.currentUser!.displayName.toString(): {
+                                '완료개수': complete,
+                                '성취도': ((complete / totalNum) * 100).floor()
+                              }});
                             }
                           });
                         },
@@ -366,6 +385,12 @@ class _CalendarState extends State<Calendar> {
                   if (_eventController.text.isEmpty) {
 
                   } else {
+                    final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc(date);
+                    final totalNumCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("일정개수");
+                    final achievementCollectionReference = FirebaseFirestore
+                        .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
+                    final memberAchieveReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("멤버별성취도");
+
                     totalNum++;
                     if (selectedEvents[selectedDay] != null) {
 
@@ -373,26 +398,33 @@ class _CalendarState extends State<Calendar> {
                         Event(title: _eventController.text),
                       );
                       event = _eventController.text;
-                      final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc(date);
                       calendarCollectionReference.update({'todo': FieldValue.arrayUnion([event]), 'date': date, '$event': FieldValue.arrayUnion(["null"])});
-                      final totalNumCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("일정개수");
                       totalNumCollectionReference.update({'개수': totalNum});
-                      final achievementCollectionReference = FirebaseFirestore
-                          .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
                       achievementCollectionReference.update({"성취도": ((complete/totalNum)*100).floor()});
+
+                      for(String memberName in memberComplete.keys) {
+                        memberAchieveReference.update({memberName : {
+                          '완료개수': memberComplete[memberName],
+                          '성취도': ((memberComplete[memberName]! / totalNum) * 100).floor()
+                        }});
+                      }
+
 
                     } else {
                       event = _eventController.text;
                       selectedEvents[selectedDay] = [
                         Event(title: _eventController.text)
                       ];
-                      final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc(date);
                       calendarCollectionReference.set({'todo': FieldValue.arrayUnion([event]), 'date': date, '$event': FieldValue.arrayUnion(["null"])});
-                      final totalNumCollectionReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("일정개수");
                       totalNumCollectionReference.update({'개수': totalNum});
-                      final achievementCollectionReference = FirebaseFirestore
-                          .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
                       achievementCollectionReference.update({"성취도": ((complete/totalNum)*100).floor()});
+
+                      for(String memberName in memberComplete.keys) {
+                        memberAchieveReference.update({memberName : {
+                          '완료개수': memberComplete[memberName],
+                          '성취도': ((memberComplete[memberName]! / totalNum) * 100).floor()
+                        }});
+                      }
 
 
                     }
