@@ -7,6 +7,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:study/func/studyInfo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/home.dart';
+import 'chat.dart';
+
 late Map<DateTime, List<Event>> selectedEvents = {};
 late Map<String, List<String>> userName = {};
 late Map<String, int> memberComplete = {};
@@ -16,12 +18,24 @@ String? date; String? event;
 int complete = 0;
 int totalNum = 0;
 
-class Calendar extends StatefulWidget {
+class Calendar extends StatelessWidget {
+  final String appbarTitle;
+  const Calendar({Key? key, required this.appbarTitle}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return  MaterialApp(
+      home: Calendar2(appbarTitle: appbarTitle,),
+    );
+  }
+}
+
+class Calendar2 extends StatefulWidget {
   @override
 
   final String appbarTitle;
-  Calendar({Key ?key, required this.appbarTitle}) : super(key: key);
-  _CalendarState createState() => _CalendarState();
+  Calendar2({Key ?key, required this.appbarTitle}) : super(key: key);
+  State<Calendar2> createState() => _CalendarState();
 
 }
 
@@ -82,8 +96,10 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
                     ];
                   }
                 }
+                int index = 0;
                 for(String str in element[s]) { // str이 유저네임..
-                  print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰: ${(element["date"]+s)}");
+                 // print("index: $index str: $str 🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰: ${(element["date"]+s)}");
+                  index++;
                   if (userName[(element["date"]+s)] != null) {
                     if(str != null) {
                       userName[(element["date"]+s)]?.add(
@@ -101,9 +117,11 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
                 }
               }
             }
-         //   print("selectedEvents $selectedEvents");
+            //print("selectedEvents $selectedEvents");
          //   print("userName $userName");
-        }});
+        }
+          //print("selectedEvents $selectedEvents");
+        });
       }
       return Text('');
     },
@@ -111,7 +129,9 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
 }
 
 
-class _CalendarState extends State<Calendar> {
+class _CalendarState extends State<Calendar2> {
+  int current_index = 1;
+  final List<Widget> _children = [Info(),Calendar(appbarTitle:''),Chat()];
   FirebaseAuth auth = FirebaseAuth.instance;
   bool _ischecked = false;
   // late Map<DateTime, List<Event>> selectedEvents;
@@ -177,25 +197,7 @@ class _CalendarState extends State<Calendar> {
             }
         ),
       ),
-      // body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      //   stream: FirebaseFirestore.instance
-      //       .collection('study').doc(widget.appbarTitle)
-      //       .snapshots(),
-      //   builder: (context, snapshot) {
-      //     if(snapshot.connectionState == ConnectionState.waiting) {
-      //       return CircularProgressIndicator();
-      //     }
-      //     snapshot.data![selectedDay].forEach((element) {
-      //       if (selectedEvents[selectedDay] != null) {
-      //         selectedEvents[selectedDay]?.add(
-      //           Event(title: element),
-      //         );
-      //       } else {
-      //         selectedEvents[selectedDay] = [
-      //           Event(title: element)
-      //         ];
-      //       }
-      //     });
+
       body: Scaffold( body: LayoutBuilder(builder: (ctx, constrains) {
         return Scaffold(body: Container(
           height: constrains.maxHeight,
@@ -283,78 +285,83 @@ class _CalendarState extends State<Calendar> {
                   ),
                   ..._getEventsfromDay(selectedDay).map(
                         (Event event) {
+                          print("event: $event");
                       if(userName.containsKey(selectedDay.toString()+(event.title))) {
                         if(userName[selectedDay.toString()+(event.title)] != null) {
                           if(userName[selectedDay.toString()+(event.title)]?.contains(auth.currentUser!.displayName.toString()) == true) {
                             _ischecked = true;
+                            print("userName[selectedDay.toString()+(event.title)]: ${selectedDay.toString()+(event.title)}, ${userName[selectedDay.toString()+(event.title)]}");
+                            print("contains: ${auth.currentUser!.displayName.toString()}");
                             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!포함된다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                           } else _ischecked = false;
 
                         }
                         //for(String name : userName[selectedDay.toString()+(event.title)])
                       }
+                      print("userName: $userName");
 
-                      return CheckboxListTile(
+                      return ListTile(
                         title: Text(event.title,),
-                        activeColor: Colors.redAccent,
-                        checkColor: Colors.black,
-                        selected: _ischecked,
-                        value: _ischecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _ischecked = value!;
-                            //print("check했고 selectedDay 포맷은??:  $selectedDay");
-                            final completeUserReference = FirebaseFirestore
-                                .instance.collection("study").doc(
-                                widget.appbarTitle)
-                                .collection("calendar")
-                                .doc('$selectedDay');
-                            final achievementCollectionReference = FirebaseFirestore
-                                .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
-                            final memberAchieveReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("멤버별성취도");
+                        trailing: Checkbox(
+                          checkColor: Colors.white,
+                          activeColor: Colors.redAccent,
+                          value: _ischecked,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _ischecked = value!;
+                              //print("check했고 selectedDay 포맷은??:  $selectedDay");
+                              final completeUserReference = FirebaseFirestore
+                                  .instance.collection("study").doc(
+                                  widget.appbarTitle)
+                                  .collection("calendar")
+                                  .doc('$selectedDay');
+                              final achievementCollectionReference = FirebaseFirestore
+                                  .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
+                              final memberAchieveReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("멤버별성취도");
 
-                            if (_ischecked) { //사용자가 완료 체크를 했을 때
-                              complete++;
-                              completeUserReference.update({
-                                event.title: FieldValue.arrayUnion([
-                                  auth.currentUser!.displayName.toString()
-                                ])
-                              });
-                              print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰Complete: $complete");
-                              userName[selectedDay.toString()+(event.title)]?.add(auth.currentUser!.displayName.toString());
-                              achievementCollectionReference.update({
-                                '개인별': complete,
-                                '성취도': ((complete/totalNum)*100).floor()
-                              });
-                              memberAchieveReference.update({auth.currentUser!.displayName.toString(): {
-                                '완료개수': complete,
-                                '성취도': ((complete / totalNum) * 100).floor()
-                              }});
+                              if (_ischecked) { //사용자가 완료 체크를 했을 때
+                                complete++;
+                                completeUserReference.update({
+                                  event.title: FieldValue.arrayUnion([
+                                    auth.currentUser!.displayName.toString()
+                                  ])
+                                });
+                                print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰Complete: $complete");
+                                userName[selectedDay.toString()+(event.title)]?.add(auth.currentUser!.displayName.toString());
+                                achievementCollectionReference.update({
+                                  '개인별': complete,
+                                  '성취도': ((complete/totalNum)*100).floor()
+                                });
+                                memberAchieveReference.update({auth.currentUser!.displayName.toString(): {
+                                  '완료개수': complete,
+                                  '성취도': ((complete / totalNum) * 100).floor()
+                                }});
 
-                            } else { // 사용자가 완료 체크를 해제했을 때
-                              /*
+                              } else { // 사용자가 완료 체크를 해제했을 때
+                                /*
                             문서에 배열 필드가 포함되어 있으면 arrayUnion() 및 arrayRemove()를 사용해 요소를 추가하거나 삭제할 수 있습니다. arrayUnion()은 배열에 없는 요소만 추가하고, arrayRemove()는 제공된 각 요소의 모든 인스턴스를 삭제합니다.
                              */
-                              complete--;
-                              completeUserReference.update({
-                                event.title: FieldValue.arrayRemove([
-                                  auth.currentUser!.displayName.toString()
-                                ])
-                              });
-                              print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰Complete: $complete");
-                              userName[selectedDay.toString()+(event.title)]?.remove(auth.currentUser!.displayName.toString());
-                              achievementCollectionReference.update({
-                                '개인별': complete,
-                                '성취도': ((complete/totalNum)*100).floor()
-                              });
-                              memberAchieveReference.update({auth.currentUser!.displayName.toString(): {
-                                '완료개수': complete,
-                                '성취도': ((complete / totalNum) * 100).floor()
-                              }});
-                            }
-                          });
-                        },
-                      );
+                                complete--;
+                                completeUserReference.update({
+                                  event.title: FieldValue.arrayRemove([
+                                    auth.currentUser!.displayName.toString()
+                                  ])
+                                });
+                                print("🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰Complete: $complete");
+                                userName[selectedDay.toString()+(event.title)]?.remove(auth.currentUser!.displayName.toString());
+                                achievementCollectionReference.update({
+                                  '개인별': complete,
+                                  '성취도': ((complete/totalNum)*100).floor()
+                                });
+                                memberAchieveReference.update({auth.currentUser!.displayName.toString(): {
+                                  '완료개수': complete,
+                                  '성취도': ((complete / totalNum) * 100).floor()
+                                }});
+                              }
+                            });
+                          },
+                      ),
+                    );
                     },
                   ),
                 ],
@@ -392,6 +399,9 @@ class _CalendarState extends State<Calendar> {
                     final memberAchieveReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("멤버별성취도");
 
                     totalNum++;
+                    userName[(selectedDay.toString()+_eventController.text)] = [
+                      "null",
+                    ];
                     if (selectedEvents[selectedDay] != null) {
 
                       selectedEvents[selectedDay]?.add(
@@ -452,6 +462,37 @@ class _CalendarState extends State<Calendar> {
         label: Text("일정 등록하기"),
         icon: Icon(Icons.add),
         backgroundColor:  Color(0xff485ed9),
+      ),
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(canvasColor: Colors.white),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.shifting,
+          currentIndex: current_index,
+          onTap: (index) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => _children[index]),
+            );
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.widgets),
+              label: '메인',
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.event_available),
+                label: '일정'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.chat_bubble),
+                label: '채팅'
+            ),
+          ],
+          selectedItemColor: Color(0xff485ed9),
+          // selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+          unselectedItemColor: Colors.grey,
+          showUnselectedLabels: true,
+        ),
       ),
 
     );

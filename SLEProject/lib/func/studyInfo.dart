@@ -5,6 +5,8 @@ import 'package:study/func/home.dart';
 import 'package:study/func/calendar.dart';
 import 'package:get/get.dart';
 
+import 'chat.dart';
+
 class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class _StudyInfo extends State<StudyInfo> {
         .arguments as Map;
     if (arguments != null) {
       study = arguments["study"] as String;
-      print("study: " + study);
+      print("studystudystudy!!!!!!!!!!!: " + study);
     }
   }
 
@@ -67,6 +69,8 @@ Widget _buildBody(BuildContext context, String study) {
 }
 
 Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot, String study) {
+  int current_index = 0;
+  final List<Widget> _children = [Info(),Calendar(appbarTitle: study),Chat()];
   return Scaffold(
     appBar: AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -124,34 +128,65 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                 maxLines: 10,
               ),
               const SizedBox(height: 15),
-              Center(
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)
-                        ),
-                      ),
-                      padding: MaterialStateProperty.all(
-                        const EdgeInsets.fromLTRB(30, 10, 30, 10),
-                      ),
-                      backgroundColor: MaterialStateProperty.all(
-                        //Color.fromARGB(255, 74, 170, 248)
-                          Color(0xff485ed9)
-                      ),
-                    ),
-
-                    onPressed: () {
-                      Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => Calendar(appbarTitle : study)));
-                      // );
-                    },
-                    child: Text('일정 페이지로 이동',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-
-                  )
-              ),
+              // Center(
+              //     child: ElevatedButton(
+              //       style: ButtonStyle(
+              //         shape: MaterialStateProperty.all(
+              //           RoundedRectangleBorder(
+              //               borderRadius: BorderRadius.circular(20.0)
+              //           ),
+              //         ),
+              //         padding: MaterialStateProperty.all(
+              //           const EdgeInsets.fromLTRB(30, 10, 30, 10),
+              //         ),
+              //         backgroundColor: MaterialStateProperty.all(
+              //           //Color.fromARGB(255, 74, 170, 248)
+              //             Color(0xff485ed9)
+              //         ),
+              //       ),
+              //
+              //       onPressed: () {
+              //         Navigator.push(
+              //             context, MaterialPageRoute(builder: (context) => Calendar(appbarTitle : study)));
+              //         // );
+              //       },
+              //       child: Text('일정 페이지로 이동',
+              //           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              //
+              //     )
+              // ),
             ],
+          ),
+          bottomNavigationBar: Theme(
+            data: Theme.of(context).copyWith(canvasColor: Colors.white),
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.shifting,
+              currentIndex: current_index,
+              onTap: (index) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => _children[index]),
+                );
+              },
+              items: [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.widgets, color:Color(0xff485ed9),),
+                  label: '메인',
+                ),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.event_available),
+                    label: '일정'
+                ),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.chat_bubble),
+                    label: '채팅'
+                ),
+              ],
+              selectedItemColor: Color(0xff485ed9),
+              // selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
+              unselectedItemColor: Colors.grey,
+              showUnselectedLabels: true,
+            ),
           ),
         ),
       ),
