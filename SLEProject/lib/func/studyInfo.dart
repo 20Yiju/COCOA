@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/editProfile.dart';
 import 'package:study/func/home.dart';
@@ -69,6 +70,8 @@ Widget _buildBody(BuildContext context, String study) {
 }
 
 Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot, String study) {
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   int current_index = 0;
   final List<Widget> _children = [Info(),Calendar(appbarTitle: study),Chat()];
   return Scaffold(
@@ -127,7 +130,40 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                 text: snapshot.data!["description"],
                 maxLines: 10,
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 35),
+              Center(
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)
+                        ),
+                      ),
+                      backgroundColor: MaterialStateProperty.all(
+                          Color(0xff485ed9)
+                      ),
+                    ),
+                    onPressed: () {
+                      if('학부생'+ snapshot.data!["hostName"] == auth.currentUser?.displayName.toString()){
+                        FirebaseFirestore.instance.collection('study').doc(study).delete();
+                        /*FirebaseFirestore.instance.collection('user').doc(auth.currentUser?.displayName.toString()).update(
+                            {heart: firebase.firestore.FieldValue.delete()}
+                        );*/
+
+
+
+
+
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => Home()));
+                      }
+
+                    },
+                    child: Text('스터디 삭제',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+
+                  )
+              ),
               // Center(
               //     child: ElevatedButton(
               //       style: ButtonStyle(
@@ -194,7 +230,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
     ),
   );
 }
-
 
 
 class TextFieldWidget extends StatefulWidget {
