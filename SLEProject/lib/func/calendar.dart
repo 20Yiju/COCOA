@@ -131,7 +131,7 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
 
 class _CalendarState extends State<Calendar2> {
   int current_index = 1;
-  final List<Widget> _children = [Info(),Calendar(appbarTitle:''),Chat()];
+  final List<Widget> _children = [Info(),Calendar(appbarTitle:''),Chat(appbarTitle: '',)];
   FirebaseAuth auth = FirebaseAuth.instance;
   bool _ischecked = false;
   // late Map<DateTime, List<Event>> selectedEvents;

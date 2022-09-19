@@ -22,6 +22,7 @@ class Info extends StatelessWidget {
         routes: {
           "StudyInfo": (context) =>  StudyInfo(),
           'calendar': (context) =>  Calendar(appbarTitle: '',),
+          'chat': (context) =>  Chat(appbarTitle: '',),
         }
       // home: StudyInfo(),
     );
@@ -73,7 +74,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
   FirebaseAuth auth = FirebaseAuth.instance;
 
   int current_index = 0;
-  final List<Widget> _children = [Info(),Calendar(appbarTitle: study),Chat()];
+  final List<Widget> _children = [Info(),Calendar(appbarTitle: study),Chat(appbarTitle: study,)];
   return Scaffold(
     appBar: AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
