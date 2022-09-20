@@ -121,7 +121,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
 
 
   int current_index = 0;
-  final List<Widget> _children = [Info(),Calendar(appbarTitle: study),Chat()];
+  final List<Widget> _children = [Info(),Calendar(appbarTitle: study),Chat(appbarTitle: study,)];
   return Scaffold(
     appBar: AppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -187,7 +187,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                              Text('${keys[index]}', style:TextStyle(fontSize: 15)),
                              const SizedBox(height: 5),
                              GFProgressBar(
-                               percentage: pct[index]!.toDouble()*0.01,
+                               percentage: pct[index].toDouble()*0.01,
                                lineHeight: 27,
                                child: Padding(
                                  padding: EdgeInsets.only(right: 20, bottom: 5, top: 3),
