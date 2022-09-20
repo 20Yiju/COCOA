@@ -7,25 +7,23 @@ import 'package:study/func/studyInfo.dart';
 import 'calendar.dart';
 
 class Chat extends StatelessWidget {
-  final String appbarTitle;
-  const Chat({Key? key, required this.appbarTitle}) : super(key: key);
+  const Chat({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'KindaCode.com',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
       ),
-      home: HomePage(appbarTitle: appbarTitle,),
+      home: const HomePage(),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  final String appbarTitle;
-  HomePage({Key ?key, required this.appbarTitle}) : super(key: key);
-
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -33,13 +31,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int current_index = 2;
-  final List<Widget> _children = [Info(),Calendar(appbarTitle:''),Chat(appbarTitle: '',)];
+  final List<Widget> _children = [Info(),Calendar(appbarTitle:''),Chat()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("${widget.appbarTitle} 스터디 채팅방"),
+        title: const Text('Chat with KindaCode.com'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
