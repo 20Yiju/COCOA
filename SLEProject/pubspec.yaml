@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^3.4.5
   get: ^4.6.5
   flutter_native_splash: ^2.1.6
+  getwidget: ^3.0.1
 
 
 dev_dependencies:
