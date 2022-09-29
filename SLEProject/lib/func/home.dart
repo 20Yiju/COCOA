@@ -90,8 +90,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
     });
 
   } on StateError catch(e){
-    //heart.add(null);
-    //studies.add(null);
   }
 
 
@@ -176,7 +174,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                                 borderRadius: BorderRadius.circular(10)
                             ),
                             primary: Colors.grey,
-                            //onPrimary:Colors.white70,
                           ),
                           child: const Text(
                             '이동',
@@ -259,7 +256,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
           ),
         ],
         selectedItemColor: Color(0xff485ed9),
-        // selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
       ),

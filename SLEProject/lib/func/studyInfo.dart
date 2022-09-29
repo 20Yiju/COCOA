@@ -13,7 +13,6 @@ late List<dynamic> name = <dynamic>[];
 late List<dynamic> achieve = <dynamic>[];
 late Map<String, int> achievements = {};
 late List<int> pct = <int>[];
-double dong = 0.9;
 int qwer = 1;
 
 class Info extends StatelessWidget {
@@ -32,7 +31,6 @@ class Info extends StatelessWidget {
           'calendar': (context) =>  Calendar(appbarTitle: '',),
           'chat': (context) =>  Chat(appbarTitle: '',),
         }
-      // home: StudyInfo(),
     );
   }
 }
@@ -55,7 +53,6 @@ class _StudyInfo extends State<StudyInfo> {
         .arguments as Map;
     if (arguments != null) {
       study = arguments["study"] as String;
-      print("studystudystudy!!!!!!!!!!!: " + study);
     }
   }
 
@@ -99,7 +96,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
 
   else {
     calendarSnapshot.data!.docs.forEach((element) {
-    print("snapshot 반복문 돌아감");
   if (element["date"].compareTo("멤버별성취도") == 0) {
     for(String s in element["member"]) {
   if(!name.contains(s)) name.add(s);
@@ -107,18 +103,13 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
   }
   }});}
 
-  for(int i = 0; i < name.length; i++) {
-    print(name[i] + "\n");
-  }
-  print("⭐⭐achievements: $achievements");
   List keys = achievements.keys.toList();
 
   for (int i = 0; i < achievements.length; i++) {
     int? percentage = achievements[keys[i]];
-    print('이야아아아아앗 $percentage');
     pct.add(percentage as int);
   }
-  print(pct);
+
   int current_index = 0;
   final List<Widget> _children = [Info(),Calendar(appbarTitle: study),Chat(appbarTitle: study,)];
   return Scaffold(
@@ -229,13 +220,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                     onPressed: () {
                       if('학부생'+ snapshot.data!["hostName"] == auth.currentUser?.displayName.toString()){
                         FirebaseFirestore.instance.collection('study').doc(study).delete();
-                        /*FirebaseFirestore.instance.collection('user').doc(auth.currentUser?.displayName.toString()).update(
-                            {heart: firebase.firestore.FieldValue.delete()}
-                        );*/
-
-
-
-
 
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (BuildContext context) => Home()));
@@ -247,33 +231,7 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
 
                   )
               ),
-              // Center(
-              //     child: ElevatedButton(
-              //       style: ButtonStyle(
-              //         shape: MaterialStateProperty.all(
-              //           RoundedRectangleBorder(
-              //               borderRadius: BorderRadius.circular(20.0)
-              //           ),
-              //         ),
-              //         padding: MaterialStateProperty.all(
-              //           const EdgeInsets.fromLTRB(30, 10, 30, 10),
-              //         ),
-              //         backgroundColor: MaterialStateProperty.all(
-              //           //Color.fromARGB(255, 74, 170, 248)
-              //             Color(0xff485ed9)
-              //         ),
-              //       ),
-              //
-              //       onPressed: () {
-              //         Navigator.push(
-              //             context, MaterialPageRoute(builder: (context) => Calendar(appbarTitle : study)));
-              //         // );
-              //       },
-              //       child: Text('일정 페이지로 이동',
-              //           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              //
-              //     )
-              // ),
+
             ],
           ),
           bottomNavigationBar: Theme(
@@ -302,7 +260,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
                 ),
               ],
               selectedItemColor: Color(0xff485ed9),
-              // selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
               unselectedItemColor: Colors.grey,
               showUnselectedLabels: true,
             ),

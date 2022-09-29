@@ -66,8 +66,6 @@ Widget _buildList(BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot
     grade= snapshot.data!["grade"];
 
   } on StateError catch(e){
-    //heart.add(null);
-    //studies.add(null);
 
   }
 
@@ -180,17 +178,3 @@ Widget buildTextField(
     ),
   );
 }
-
-
-
-
-
-/*FirebaseFirestore.instance.collection("users")
-.doc(auth.currentUser!.displayName.toString())
-.get()
-    .then((DocumentSnapshot ds) {
-department = ds["department"];
-grade = ds["grade"];
-sex = ds["sex"];
-
-});*/

@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:study/func/home.dart';
 import 'package:study/func/heartList.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:study/func/profile.dart';
 late List<dynamic> studies = <dynamic>[];
 late List<dynamic> number = <dynamic>[];
@@ -76,16 +74,7 @@ Widget _buildBody2(BuildContext context, String study) {
 }
 
 Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
-  var user = FirebaseAuth.instance.authStateChanges();
   FirebaseAuth auth = FirebaseAuth.instance;
-  List<String> saved = [];
-  List<String> titleList = [];
-
-  // userHeart = _buildBody2(context) as List;
-
-  // snapshot.data!["study"].forEach((element) {
-  //   studies.add(element);
-  // });
 
   snapshot.forEach((element) {
     if(!studies.contains(element["studyName"])) {
@@ -94,14 +83,10 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
       description.add(element["description"]);
       url.add(element["url"]);
       member.add(element["member"]);
-      print("member list: $member");
       if(userHeart.contains(element["studyName"])) studyHeart.add(true);
       else studyHeart.add(false);
     }
   });
-
-  print("heart: $userHeart");
-  print("studylist: $studies");
 
 
   void showPopup(context, title,explain) {
@@ -159,12 +144,9 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
     );
   }
 
-
   int current_index =1;
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
-
-  print("length: ${studies.length}");
   double width = MediaQuery
       .of(context)
       .size
@@ -244,7 +226,6 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
                             onPressed: ()  {
                               if(int.parse(number[index]) == member[index]) {
                                 showPopup2(context);
-                                print("!!!!!!!!!!!!!!정원다참!!!!!!!!!!!!!!!!!");
                               }
                               else {
                                 FlutterDialog(context);
@@ -264,7 +245,6 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
                                     studies[index]);
                                 studyCollectionReference.update({
                                   'member': member[index] + 1});
-                                print("member count: ${member[index]}");
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -358,8 +338,6 @@ class Search extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     int index = studies.indexOf(selectedResult);
     FirebaseAuth auth = FirebaseAuth.instance;
-    print('🥰🥰🥰🥰🥰🥰🥰🥰🥰');
-    print(index);
 
     void showPopup(context, title,explain) {
       showDialog(
@@ -469,10 +447,6 @@ class Search extends SearchDelegate {
                         width: 50,
                         child: ElevatedButton(
                           onPressed: () {
-                            // 9.27 !!
-                            // final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(studies[index]).collection("calendar").doc("멤버별성취도");
-                            // calendarCollectionReference.update({'date': "멤버별성취도"});
-
                             if(int.parse(number[index]) == member[index]) showPopup2(context);
                             else {
                               final userCollectionReference = FirebaseFirestore
@@ -491,7 +465,6 @@ class Search extends SearchDelegate {
                                   studies[index]);
                               studyCollectionReference.update({
                                 'member': member[index] + 1});
-                              print("member count: ${member[index]}");
                             }
                           },
                           style: ElevatedButton.styleFrom(
