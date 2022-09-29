@@ -255,6 +255,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot,) {
                                   'study': FieldValue.arrayUnion(
                                       [studies[index]])});
                                 userCollectionReference.collection("achievement").doc(studies[index]).set({
+                                  "studyName" : studies[index],
                                   "개인별": 0,
                                   "성취도": 0,
                                 });
@@ -468,6 +469,10 @@ class Search extends SearchDelegate {
                         width: 50,
                         child: ElevatedButton(
                           onPressed: () {
+                            // 9.27 !!
+                            // final calendarCollectionReference = FirebaseFirestore.instance.collection("study").doc(studies[index]).collection("calendar").doc("멤버별성취도");
+                            // calendarCollectionReference.update({'date': "멤버별성취도"});
+
                             if(int.parse(number[index]) == member[index]) showPopup2(context);
                             else {
                               final userCollectionReference = FirebaseFirestore
@@ -477,6 +482,7 @@ class Search extends SearchDelegate {
                                 'study': FieldValue.arrayUnion(
                                     [studies[index]])});
                               userCollectionReference.collection("achievement").doc(studies[index]).set({
+                                "studyName" : studies[index],
                                 "개인별": 0,
                                 "성취도": 0,
                               });

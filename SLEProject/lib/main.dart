@@ -169,8 +169,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: new Center(
-        child: new Image.asset('image/start.png'),
+      body: Container(
+          child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('image/start1.png',
+                    width: 680,
+                    height: 683,
+                    fit: BoxFit.fill,
+                  ),
+                ],
+              )
+          )
       ),
     );
   }

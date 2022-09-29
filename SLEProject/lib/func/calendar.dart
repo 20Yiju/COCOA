@@ -51,23 +51,23 @@ Widget _buildBody2(BuildContext context, String study) {
 }
 
 Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> userSnapshot) {
- // print("buildBody 호출!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  // print("buildBody 호출!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   userSnapshot.forEach((element) {
-   // print("element: ${element["studyName"]}");
+    // print("element: ${element["studyName"]}");
     if(study.compareTo(element["studyName"])==0) {
       complete = element["개인별"];
-     // print("개인별: $complete");
+      // print("개인별: $complete");
     }
   });
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance.collection("study").doc(study).collection("calendar").snapshots(),
     builder: (context, snapshot) {
-    //  print("스트림 빌더");
+      //  print("스트림 빌더");
       if (!snapshot.hasData) return LinearProgressIndicator();
 
       else {
         snapshot.data!.docs.forEach((element) {
-         // print("snapshot 반복문 돌아감");
+          // print("snapshot 반복문 돌아감");
           //print("element[date]: ${DateTime.parse(element["date"])}");
           if(element["date"].compareTo("일정개수") == 0) {
             totalNum = element["개수"];
@@ -98,7 +98,7 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
                 }
                 int index = 0;
                 for(String str in element[s]) { // str이 유저네임..
-                 // print("index: $index str: $str 🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰: ${(element["date"]+s)}");
+                  // print("index: $index str: $str 🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰: ${(element["date"]+s)}");
                   index++;
                   if (userName[(element["date"]+s)] != null) {
                     if(str != null) {
@@ -113,13 +113,12 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
                       ];
                     }
                   }
-
                 }
               }
             }
             //print("selectedEvents $selectedEvents");
-         //   print("userName $userName");
-        }
+            //   print("userName $userName");
+          }
           //print("selectedEvents $selectedEvents");
         });
       }
@@ -285,7 +284,7 @@ class _CalendarState extends State<Calendar2> {
                   ),
                   ..._getEventsfromDay(selectedDay).map(
                         (Event event) {
-                          print("event: $event");
+                      print("event: $event");
                       if(userName.containsKey(selectedDay.toString()+(event.title))) {
                         if(userName[selectedDay.toString()+(event.title)] != null) {
                           if(userName[selectedDay.toString()+(event.title)]?.contains(auth.currentUser!.displayName.toString()) == true) {
@@ -360,8 +359,8 @@ class _CalendarState extends State<Calendar2> {
                               }
                             });
                           },
-                      ),
-                    );
+                        ),
+                      );
                     },
                   ),
                 ],

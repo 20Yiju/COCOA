@@ -173,9 +173,22 @@ class AddStateWidget extends State<AddStatefulWidget> {
                               'study': FieldValue.arrayUnion(
                                   [inputController1.text])});
                             userCollectionReference.collection("achievement").doc(inputController1.text).set({
+                              "studyName" : inputController1.text,
                               "개인별": 0,
                               "성취도": 0,
                             });
+
+                            // 9.27 !!
+
+                            // final calendarCollectionReference = FirebaseFirestore
+                            //     .instance.collection("study").doc(
+                            //     inputController1.text);
+                            // calendarCollectionReference.update({
+                            //   'study': FieldValue.arrayUnion(
+                            //       [inputController1.text])});
+                            // userCollectionReference.collection("calendar").doc("멤버별성취도").set({
+                            //   "date": "멤버별성취도",
+                            // });
 
                             // final studyCollectionReference = FirebaseFirestore
                             //     .instance.collection("study").doc(
