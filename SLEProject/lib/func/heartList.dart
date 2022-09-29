@@ -87,7 +87,6 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
   });
 
   userSnapshot.data!["heart"].forEach((element) {
-    print("element: $element");
     for(int i=0; i<studies.length; i++) {
       if(studies[i].compareTo(element)==0) {
         if(!userHeart.contains(studies[i])) {
@@ -97,12 +96,7 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
     }
   });
 
-  print("userHeart: $userHeart");
-
   idx = findIndex(context, studies, userHeart);
-  print("index: $idx");
-
-  print("studylist: $studies");
 
   void showPopup(context, title,explain) {
     showDialog(
@@ -163,7 +157,6 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
   final List<Widget> _children = [Home(), StudyList(),HeartList(), SettingsUI()];
 
 
-  print("length: ${studies.length}");
   double width = MediaQuery
       .of(context)
       .size
@@ -274,7 +267,6 @@ Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot, AsyncSn
                                     studies[index]);
                                 studyCollectionReference.update({
                                   'member': member[index] + 1});
-                                print("member count: ${member[index]}");
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -421,8 +413,7 @@ class Search extends SearchDelegate {
     }
     int index = userHeart.indexOf(selectedResult);
     FirebaseAuth auth = FirebaseAuth.instance;
-    print('🥰🥰🥰🥰🥰🥰🥰🥰🥰');
-    print(index);
+
     return ListView(
       children: <Widget>[
         InkWell(
@@ -509,7 +500,6 @@ class Search extends SearchDelegate {
                                 studies[index]);
                             studyCollectionReference.update({
                               'member': member[index] + 1});
-                            print("member count: ${member[index]}");
                           }
 
                         },
@@ -576,8 +566,6 @@ List<dynamic> saveUserHeart(BuildContext context, AsyncSnapshot<DocumentSnapshot
   snapshot.data!["heart"].forEach((element) {
     if(studies.contains(element)==0) {
       userHeart.add(element["heart"]);
-      print('아아아아아악');
-      print(userHeart);
     }
   });
   return userHeart;

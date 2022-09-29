@@ -51,24 +51,18 @@ Widget _buildBody2(BuildContext context, String study) {
 }
 
 Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> userSnapshot) {
-  // print("buildBody 호출!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   userSnapshot.forEach((element) {
-    // print("element: ${element["studyName"]}");
     if(study.compareTo(element["studyName"])==0) {
       complete = element["개인별"];
-      // print("개인별: $complete");
     }
   });
   return StreamBuilder<QuerySnapshot>(
     stream: FirebaseFirestore.instance.collection("study").doc(study).collection("calendar").snapshots(),
     builder: (context, snapshot) {
-      //  print("스트림 빌더");
       if (!snapshot.hasData) return LinearProgressIndicator();
 
       else {
         snapshot.data!.docs.forEach((element) {
-          // print("snapshot 반복문 돌아감");
-          //print("element[date]: ${DateTime.parse(element["date"])}");
           if(element["date"].compareTo("일정개수") == 0) {
             totalNum = element["개수"];
             print("개수: $totalNum");
@@ -77,7 +71,6 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
             for(String m in element["member"]) {
               memberComplete[m] = element[m]["완료개수"];
             }
-            print("멤버별 완료개수: $memberComplete");
           }
           else {
             if (!selectedEvents.containsKey(DateTime.parse(element["date"]))) {
@@ -98,7 +91,6 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
                 }
                 int index = 0;
                 for(String str in element[s]) { // str이 유저네임..
-                  // print("index: $index str: $str 🥰🥰🥰🥰🥰🥰🥰🥰🥰🥰: ${(element["date"]+s)}");
                   index++;
                   if (userName[(element["date"]+s)] != null) {
                     if(str != null) {
@@ -116,10 +108,7 @@ Widget _buildBody(BuildContext context, String study, List<DocumentSnapshot> use
                 }
               }
             }
-            //print("selectedEvents $selectedEvents");
-            //   print("userName $userName");
           }
-          //print("selectedEvents $selectedEvents");
         });
       }
       return Text('');
@@ -133,19 +122,6 @@ class _CalendarState extends State<Calendar2> {
   final List<Widget> _children = [Info(),Calendar(appbarTitle:''),Chat(appbarTitle: '')];
   FirebaseAuth auth = FirebaseAuth.instance;
   bool _ischecked = false;
-  // late Map<DateTime, List<Event>> selectedEvents;
-  // 맨 처음 이 페이지에 들어왔을 때 Map<DateTime, List<Event>> selectedEvent에 firebase에 있는 데이터들을 저장하는거야. 그렇게 초기화를 하는거지, 그리고
-  // selectedEvent에 값이 업데이트 될 때마다 selectedEvent[dateTime]에 할 일들을 add 하잖아. 그럼 동시에 firebase에 저장하면 되지
-  // 그렇다면 이렇게 할까...? late Map<DateTime, List<Event>> selectedEvents를 전역변수로...? 그리고 streambuilder로
-  // 해당 스터디 snapshot을 가져오고 필드 event가 :을 contain 한다면 map에 add하는 걸로
-
-  // StreamBuilder<DocumentSnapshot>(
-  // stream: FirebaseFirestore.instance.collection('users').doc(study).snapshots(),
-  // builder: (context, snapshot) {
-  // if (!snapshot.hasData) return LinearProgressIndicator();
-  //
-  // return _buildList(context, snapshot);
-  // }
 
   CalendarFormat format = CalendarFormat.month;
   DateTime selectedDay = DateTime.now();
@@ -172,7 +148,6 @@ class _CalendarState extends State<Calendar2> {
 
   @override
   Widget build(BuildContext context) {
-    /*_buildBody(context,widget.appbarTitle);*/
     return Scaffold(
       appBar: AppBar(
         title: Text("${widget.appbarTitle} 스터디 일정",
@@ -190,8 +165,6 @@ class _CalendarState extends State<Calendar2> {
               color: Colors.white,
             ),
             onPressed: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => StudyInfo()));
               Navigator.of(context).pushNamed(Routes.Info, arguments: {"study": widget.appbarTitle});
             }
         ),
@@ -225,18 +198,7 @@ class _CalendarState extends State<Calendar2> {
                         selectedDay = selectDay;
                         focusedDay = focusDay;
                       });
-                      // snapshot.data![selectedDay].forEach((element) {
-                      //   if (selectedEvents[selectedDay] != null) {
-                      //     selectedEvents[selectedDay]?.add(
-                      //       Event(title: element),
-                      //     );
-                      //   } else {
-                      //     selectedEvents[selectedDay] = [
-                      //       Event(title: element)
-                      //     ];
-                      //   }
-                      // });
-                      print(focusedDay);
+
                       date = focusedDay.toString();
 
                     },
@@ -284,20 +246,14 @@ class _CalendarState extends State<Calendar2> {
                   ),
                   ..._getEventsfromDay(selectedDay).map(
                         (Event event) {
-                      print("event: $event");
                       if(userName.containsKey(selectedDay.toString()+(event.title))) {
                         if(userName[selectedDay.toString()+(event.title)] != null) {
                           if(userName[selectedDay.toString()+(event.title)]?.contains(auth.currentUser!.displayName.toString()) == true) {
                             _ischecked = true;
-                            print("userName[selectedDay.toString()+(event.title)]: ${selectedDay.toString()+(event.title)}, ${userName[selectedDay.toString()+(event.title)]}");
-                            print("contains: ${auth.currentUser!.displayName.toString()}");
-                            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!포함된다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                           } else _ischecked = false;
 
                         }
-                        //for(String name : userName[selectedDay.toString()+(event.title)])
                       }
-                      print("userName: $userName");
 
                       return ListTile(
                         title: Text(event.title,),
@@ -308,7 +264,6 @@ class _CalendarState extends State<Calendar2> {
                           onChanged: (bool? value) {
                             setState(() {
                               _ischecked = value!;
-                              //print("check했고 selectedDay 포맷은??:  $selectedDay");
                               final completeUserReference = FirebaseFirestore
                                   .instance.collection("study").doc(
                                   widget.appbarTitle)
@@ -318,7 +273,7 @@ class _CalendarState extends State<Calendar2> {
                                   .instance.collection('users').doc(auth.currentUser!.displayName.toString()).collection("achievement").doc(widget.appbarTitle);
                               final memberAchieveReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle).collection("calendar").doc("멤버별성취도");
 
-                              if (_ischecked) { //사용자가 완료 체크를 했을 때
+                              if (_ischecked) { // 사용자가 완료 체크를 했을 때
                                 complete++;
                                 completeUserReference.update({
                                   event.title: FieldValue.arrayUnion([
@@ -337,9 +292,6 @@ class _CalendarState extends State<Calendar2> {
                                 }});
 
                               } else { // 사용자가 완료 체크를 해제했을 때
-                                /*
-                            문서에 배열 필드가 포함되어 있으면 arrayUnion() 및 arrayRemove()를 사용해 요소를 추가하거나 삭제할 수 있습니다. arrayUnion()은 배열에 없는 요소만 추가하고, arrayRemove()는 제공된 각 요소의 모든 인스턴스를 삭제합니다.
-                             */
                                 complete--;
                                 completeUserReference.update({
                                   event.title: FieldValue.arrayRemove([
@@ -418,7 +370,6 @@ class _CalendarState extends State<Calendar2> {
                         }});
                       }
 
-
                     } else {
                       event = _eventController.text;
                       selectedEvents[selectedDay] = [
@@ -437,18 +388,7 @@ class _CalendarState extends State<Calendar2> {
 
 
                     }
-                    //print("마지막 확인 $event 그리고 $date");
-                    print('selectedDay: $selectedDay');
-                    print("date: $date");
                   }
-
-                  // final calendarReference = FirebaseFirestore.instance.collection("study").doc(widget.appbarTitle);
-                  // calendarReference.update({'$date' : FieldValue.arrayUnion([event])});
-                  // title : 일정 이름, selectDay
-                  //print("title $title, day: $selectedDay");
-                  //print("title title, day: $selectedDay");
-
-
                   Navigator.pop(context);
                   _eventController.clear();
                   setState((){});
@@ -488,7 +428,6 @@ class _CalendarState extends State<Calendar2> {
             ),
           ],
           selectedItemColor: Color(0xff485ed9),
-          // selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),
           unselectedItemColor: Colors.grey,
           showUnselectedLabels: true,
         ),
@@ -497,9 +436,3 @@ class _CalendarState extends State<Calendar2> {
     );
   }
 }
-
-/*final userStudyCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString()).collection(widget.appbarTitle).doc(date);
-                      userStudyCollectionReference.update({'todo': FieldValue.arrayUnion([{'$event': false}]), 'date': date});*/
-
-// final userStudyCollectionReference = FirebaseFirestore.instance.collection("users").doc(auth.currentUser!.displayName.toString()).collection(widget.appbarTitle).doc(date);
-// userStudyCollectionReference.set({'todo': FieldValue.arrayUnion([{'$event': false}]), 'date': date});
